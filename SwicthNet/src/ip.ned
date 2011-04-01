@@ -24,7 +24,7 @@ simple Ip
     parameters:
         int limit = default(1);
         @display("i=block/layer");
-    	    
+        int my_ip;
     gates:
         inout upLayer;
         inout downLayer;
