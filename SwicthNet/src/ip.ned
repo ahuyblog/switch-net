@@ -24,7 +24,10 @@ simple Ip
     parameters:
         int limit = default(1);
         @display("i=block/layer");
-        int my_ip;
+        int ip1 = default(172); // the numeber of the host
+        int ip2 = default(168);
+        int ip3 = default(32);
+        int ip3 = default(0);
     gates:
         inout upLayer;
         inout downLayer;
