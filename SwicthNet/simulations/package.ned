@@ -1,3 +1,3 @@
-package swicthnet.simulations;
+package SwicthNet.simulations;
 
 @license(LGPL);
