@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package swicthnet;
+package SwicthNet.src;
 
 //
 // TODO auto-generated module
@@ -22,9 +22,6 @@ simple App
 {
     parameters:
         @display("i=block/app");
-    
-        
-            
     gates:
         inout downLayer;
 }
