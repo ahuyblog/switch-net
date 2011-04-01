@@ -24,7 +24,7 @@
  * 
  * 
  * 	string data;
- * 	string dest;
+ * 	unsigned char dest[4];
  * }
  * </pre>
  */
@@ -32,7 +32,7 @@ class App_pck : public ::cPacket
 {
   protected:
     opp_string data_var;
-    opp_string dest_var;
+    unsigned char dest_var[4];
 
     // protected and unimplemented operator==(), to prevent accidental usage
     bool operator==(const App_pck&);
@@ -49,8 +49,9 @@ class App_pck : public ::cPacket
     // field getter/setter methods
     virtual const char * getData() const;
     virtual void setData(const char * data_var);
-    virtual const char * getDest() const;
-    virtual void setDest(const char * dest_var);
+    virtual unsigned int getDestArraySize() const;
+    virtual unsigned char getDest(unsigned int k) const;
+    virtual void setDest(unsigned int k, unsigned char dest_var);
 };
 
 inline void doPacking(cCommBuffer *b, App_pck& obj) {obj.parsimPack(b);}

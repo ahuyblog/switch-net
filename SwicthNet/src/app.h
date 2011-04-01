@@ -16,20 +16,26 @@
 #ifndef __SWICTHNET_APP_H_
 #define __SWICTHNET_APP_H_
 
+#include <stdio.h>
+#include <string.h>
 #include <omnetpp.h>
+#include "App_pck_m.h"
 
 /**
  * TODO - Generated class
  */
 class App : public cSimpleModule
 {
-  protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+public:
+	App();
+protected:
+	virtual void initialize();
+    virtual void handleMessage(App_pck *msg);
+    virtual App_pck *generateMsg();
   private:
     simtime_t timeout;  // timeout
     cMessage *timeoutMsg;  // holds pointer to the timeout self-message
-    App_pak *message;  // message that has to be re-sent on timeout
+    App_pck *message;  // message that has to be re-sent on timeout
 };
 
 #endif

@@ -125,5 +125,6 @@ $O/App_pck_m.o: App_pck_m.cc \
 $O/Eth_pck_m.o: Eth_pck_m.cc \
 	Eth_pck_m.h
 $O/app.o: app.cc \
-	app.h
+	app.h \
+	App_pck_m.h
 
