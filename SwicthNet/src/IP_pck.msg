@@ -28,7 +28,7 @@ packet IP_pck {
 	unsigned char ttl;
 	unsigned char protocol;
 	unsigned short checkSum;
-	unsigned char[4] destIp;
-	unsigned char[4] srcIp;
+	unsigned char destIp[4];
+	unsigned char srcIp[4];
 	
 }

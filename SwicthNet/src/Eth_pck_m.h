@@ -25,22 +25,24 @@
  * 
  * 
  *     
- *     string preamble;
- *     string macDest;
- *     string macSrc;
- *     short length;
+ *     unsigned char preamble[8];
+ *     unsigned char macDest[6];
+ *     unsigned char macSrc[6];
+ *     unsigned short length;
  *     string data;
+ *     unsigned long fcs;
  * }
  * </pre>
  */
 class Eth_pck : public ::cPacket
 {
   protected:
-    opp_string preamble_var;
-    opp_string macDest_var;
-    opp_string macSrc_var;
-    short length_var;
+    unsigned char preamble_var[8];
+    unsigned char macDest_var[6];
+    unsigned char macSrc_var[6];
+    unsigned short length_var;
     opp_string data_var;
+    unsigned long fcs_var;
 
     // protected and unimplemented operator==(), to prevent accidental usage
     bool operator==(const Eth_pck&);
@@ -55,16 +57,21 @@ class Eth_pck : public ::cPacket
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
-    virtual const char * getPreamble() const;
-    virtual void setPreamble(const char * preamble_var);
-    virtual const char * getMacDest() const;
-    virtual void setMacDest(const char * macDest_var);
-    virtual const char * getMacSrc() const;
-    virtual void setMacSrc(const char * macSrc_var);
-    virtual short getLength() const;
-    virtual void setLength(short length_var);
+    virtual unsigned int getPreambleArraySize() const;
+    virtual unsigned char getPreamble(unsigned int k) const;
+    virtual void setPreamble(unsigned int k, unsigned char preamble_var);
+    virtual unsigned int getMacDestArraySize() const;
+    virtual unsigned char getMacDest(unsigned int k) const;
+    virtual void setMacDest(unsigned int k, unsigned char macDest_var);
+    virtual unsigned int getMacSrcArraySize() const;
+    virtual unsigned char getMacSrc(unsigned int k) const;
+    virtual void setMacSrc(unsigned int k, unsigned char macSrc_var);
+    virtual unsigned short getLength() const;
+    virtual void setLength(unsigned short length_var);
     virtual const char * getData() const;
     virtual void setData(const char * data_var);
+    virtual unsigned long getFcs() const;
+    virtual void setFcs(unsigned long fcs_var);
 };
 
 inline void doPacking(cCommBuffer *b, Eth_pck& obj) {obj.parsimPack(b);}
