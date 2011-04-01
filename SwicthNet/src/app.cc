@@ -30,7 +30,7 @@ void App::initialize()
 	// Generate and send initial message.
 	EV << "Sending initial message\n";
 	message = generateMsg();
-	timeoutMsg = new App_pck();
+	timeoutMsg = new cMessage("timeoutEvent");
 	sendCopyOf(message);
 	scheduleAt(simTime()+timeout, timeoutMsg);
 	// TODO - Generated method body

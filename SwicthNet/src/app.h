@@ -28,7 +28,7 @@ class App : public cSimpleModule
     virtual void handleMessage(cMessage *msg);
   private:
     simtime_t timeout;  // timeout
-    App_pak *timeoutMsg;  // holds pointer to the timeout self-message
+    cMessage *timeoutMsg;  // holds pointer to the timeout self-message
     App_pak *message;  // message that has to be re-sent on timeout
 };
 
