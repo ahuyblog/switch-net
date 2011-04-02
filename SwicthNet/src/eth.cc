@@ -20,16 +20,32 @@ Define_Module(Eth);
 
 void Eth::initialize()
 {
-    // TODO - Generated method body
-	//Eth_pck temp = new Eth_pck;
+	 myMac = new char[6];
+	    myMac[0] = 11;
+	    myMac[1] = 11;
+	    myMac[2] = 11;
+	    myMac[3] = 11;
+	    myMac[4] = 11;
+	    myMac[5] = getIndex();
+	    // init rand array for ip randomize
+	    int size = getVectorSize()-1;
+	    randArr = new int[size];
+	    for (int i=0,j=0; j<size; i++)
+	    {
+	    	if (i != getIndex())
+	    	{
+	    		randArr[j]=i;
+	    		j++;
+	    	}
+	    }
 }
 
 void Eth::handleMessage(cMessage *msg)
 {
 	if (msg->arrivedOn("downLayer"))
-	    	processMsgFromLowerLayer(check_and_cast<Eth_pck *>(msg));
+	    processMsgFromLowerLayer(check_and_cast<Eth_pck *>(msg));
 	else
-	    	processMsgFromHigherLayer(check_and_cast<IP_pck *>(msg));
+	    processMsgFromHigherLayer(check_and_cast<IP_pck *>(msg));
 }
 void Eth::processMsgFromHigherLayer(IP_pck *packet)
 {

@@ -13,21 +13,11 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package SwicthNet.src;
-
 //
-// TODO auto-generated module
+// TODO generated message class
 //
-
-
-simple Eth
-{
-    
-    parameters:
-        @display("i=block/ifcard");
-		volatile double aging @unit(s);
-    gates:
-        inout upLayer;
-        input downLayerIn;
-        output downLayerOut;
+packet Arp {
+   unsigned short type; // request , reply
+   char ip[4];
+   char mac[6];
 }

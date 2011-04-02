@@ -27,6 +27,5 @@ packet Eth_pck {
     unsigned char macDest[6];
     unsigned char macSrc[6];
     unsigned short length;
-    string data;
     unsigned long fcs;
 }

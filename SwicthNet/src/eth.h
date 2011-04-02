@@ -17,17 +17,28 @@
 #define __SWICTHNET_ETH_H_
 
 #include <omnetpp.h>
+#include <string.h>
+#include <stdio.h>
+#include <vector>
+#include "Eth_pck_m.h"
+#include "IP_pck_m.h"
 
-/**
- * TODO - Generated class
- */
+typedef struct arpTable
+{
+	char destIp[4];
+	char mac[6];
+}arpTable;
+
 class Eth : public cSimpleModule
 {
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
-    virtual void processMsgFromHigherLayer(App_pck *packet);
-    virtual void processMsgFromLowerLayer(IP_pck *packet);
+    virtual void processMsgFromHigherLayer(IP_pck *packet);
+    virtual void processMsgFromLowerLayer(Eth_pck *packet);
+    char *myMac;
+  private:
+    int *randArr;
 };
 
 #endif

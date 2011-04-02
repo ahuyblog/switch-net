@@ -29,7 +29,6 @@
  *     unsigned char macDest[6];
  *     unsigned char macSrc[6];
  *     unsigned short length;
- *     string data;
  *     unsigned long fcs;
  * }
  * </pre>
@@ -41,7 +40,6 @@ class Eth_pck : public ::cPacket
     unsigned char macDest_var[6];
     unsigned char macSrc_var[6];
     unsigned short length_var;
-    opp_string data_var;
     unsigned long fcs_var;
 
     // protected and unimplemented operator==(), to prevent accidental usage
@@ -68,8 +66,6 @@ class Eth_pck : public ::cPacket
     virtual void setMacSrc(unsigned int k, unsigned char macSrc_var);
     virtual unsigned short getLength() const;
     virtual void setLength(unsigned short length_var);
-    virtual const char * getData() const;
-    virtual void setData(const char * data_var);
     virtual unsigned long getFcs() const;
     virtual void setFcs(unsigned long fcs_var);
 };

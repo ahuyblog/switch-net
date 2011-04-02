@@ -41,7 +41,6 @@ Eth_pck::Eth_pck(const char *name, int kind) : cPacket(name,kind)
     for (unsigned int i=0; i<6; i++)
         this->macSrc_var[i] = 0;
     this->length_var = 0;
-    this->data_var = 0;
     this->fcs_var = 0;
 }
 
@@ -66,7 +65,6 @@ Eth_pck& Eth_pck::operator=(const Eth_pck& other)
     for (unsigned int i=0; i<6; i++)
         this->macSrc_var[i] = other.macSrc_var[i];
     this->length_var = other.length_var;
-    this->data_var = other.data_var;
     this->fcs_var = other.fcs_var;
     return *this;
 }
@@ -78,7 +76,6 @@ void Eth_pck::parsimPack(cCommBuffer *b)
     doPacking(b,this->macDest_var,6);
     doPacking(b,this->macSrc_var,6);
     doPacking(b,this->length_var);
-    doPacking(b,this->data_var);
     doPacking(b,this->fcs_var);
 }
 
@@ -89,7 +86,6 @@ void Eth_pck::parsimUnpack(cCommBuffer *b)
     doUnpacking(b,this->macDest_var,6);
     doUnpacking(b,this->macSrc_var,6);
     doUnpacking(b,this->length_var);
-    doUnpacking(b,this->data_var);
     doUnpacking(b,this->fcs_var);
 }
 
@@ -154,16 +150,6 @@ void Eth_pck::setLength(unsigned short length_var)
     this->length_var = length_var;
 }
 
-const char * Eth_pck::getData() const
-{
-    return data_var.c_str();
-}
-
-void Eth_pck::setData(const char * data_var)
-{
-    this->data_var = data_var;
-}
-
 unsigned long Eth_pck::getFcs() const
 {
     return fcs_var;
@@ -221,7 +207,7 @@ const char *Eth_pckDescriptor::getProperty(const char *propertyname) const
 int Eth_pckDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 6+basedesc->getFieldCount(object) : 6;
+    return basedesc ? 5+basedesc->getFieldCount(object) : 5;
 }
 
 unsigned int Eth_pckDescriptor::getFieldTypeFlags(void *object, int field) const
@@ -238,9 +224,8 @@ unsigned int Eth_pckDescriptor::getFieldTypeFlags(void *object, int field) const
         FD_ISARRAY | FD_ISEDITABLE,
         FD_ISEDITABLE,
         FD_ISEDITABLE,
-        FD_ISEDITABLE,
     };
-    return (field>=0 && field<6) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<5) ? fieldTypeFlags[field] : 0;
 }
 
 const char *Eth_pckDescriptor::getFieldName(void *object, int field) const
@@ -256,10 +241,9 @@ const char *Eth_pckDescriptor::getFieldName(void *object, int field) const
         "macDest",
         "macSrc",
         "length",
-        "data",
         "fcs",
     };
-    return (field>=0 && field<6) ? fieldNames[field] : NULL;
+    return (field>=0 && field<5) ? fieldNames[field] : NULL;
 }
 
 int Eth_pckDescriptor::findField(void *object, const char *fieldName) const
@@ -270,8 +254,7 @@ int Eth_pckDescriptor::findField(void *object, const char *fieldName) const
     if (fieldName[0]=='m' && strcmp(fieldName, "macDest")==0) return base+1;
     if (fieldName[0]=='m' && strcmp(fieldName, "macSrc")==0) return base+2;
     if (fieldName[0]=='l' && strcmp(fieldName, "length")==0) return base+3;
-    if (fieldName[0]=='d' && strcmp(fieldName, "data")==0) return base+4;
-    if (fieldName[0]=='f' && strcmp(fieldName, "fcs")==0) return base+5;
+    if (fieldName[0]=='f' && strcmp(fieldName, "fcs")==0) return base+4;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -288,10 +271,9 @@ const char *Eth_pckDescriptor::getFieldTypeString(void *object, int field) const
         "unsigned char",
         "unsigned char",
         "unsigned short",
-        "string",
         "unsigned long",
     };
-    return (field>=0 && field<6) ? fieldTypeStrings[field] : NULL;
+    return (field>=0 && field<5) ? fieldTypeStrings[field] : NULL;
 }
 
 const char *Eth_pckDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
@@ -338,8 +320,7 @@ std::string Eth_pckDescriptor::getFieldAsString(void *object, int field, int i) 
         case 1: return ulong2string(pp->getMacDest(i));
         case 2: return ulong2string(pp->getMacSrc(i));
         case 3: return ulong2string(pp->getLength());
-        case 4: return oppstring2string(pp->getData());
-        case 5: return ulong2string(pp->getFcs());
+        case 4: return ulong2string(pp->getFcs());
         default: return "";
     }
 }
@@ -358,8 +339,7 @@ bool Eth_pckDescriptor::setFieldAsString(void *object, int field, int i, const c
         case 1: pp->setMacDest(i,string2ulong(value)); return true;
         case 2: pp->setMacSrc(i,string2ulong(value)); return true;
         case 3: pp->setLength(string2ulong(value)); return true;
-        case 4: pp->setData((value)); return true;
-        case 5: pp->setFcs(string2ulong(value)); return true;
+        case 4: pp->setFcs(string2ulong(value)); return true;
         default: return false;
     }
 }
@@ -378,9 +358,8 @@ const char *Eth_pckDescriptor::getFieldStructName(void *object, int field) const
         NULL,
         NULL,
         NULL,
-        NULL,
     };
-    return (field>=0 && field<6) ? fieldStructNames[field] : NULL;
+    return (field>=0 && field<5) ? fieldStructNames[field] : NULL;
 }
 
 void *Eth_pckDescriptor::getFieldStructPointer(void *object, int field, int i) const
