@@ -38,7 +38,4 @@ module Host
         ipLayer.upLayer <--> app.downLayer;
         ether.downLayerIn <-- in;
         ether.downLayerOut --> out;
-
-
-
 }

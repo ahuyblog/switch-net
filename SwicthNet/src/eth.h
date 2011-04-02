@@ -22,7 +22,7 @@
 #include <vector>
 #include "Eth_pck_m.h"
 #include "IP_pck_m.h"
-
+using namespace std;
 typedef struct arpTable
 {
 	char destIp[4];
@@ -37,8 +37,11 @@ class Eth : public cSimpleModule
     virtual void processMsgFromHigherLayer(IP_pck *packet);
     virtual void processMsgFromLowerLayer(Eth_pck *packet);
     char *myMac;
+    arpTable table[10];
   private:
+    virtual char *getMacFromTable(char* ip);
     int *randArr;
+    vector<cMessage*> fifo; // will hold all messeges that need to be sent
 };
 
 #endif
