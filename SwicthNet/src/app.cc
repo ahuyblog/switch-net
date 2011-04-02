@@ -31,21 +31,23 @@ void App::initialize()
 	scheduleAt(simTime()+delay, timeoutMsg);
 }
 
-void App::handleMessage(App_pck *msg)
+void App::handleMessage(cMessage *msg)
 {
+
 	if (msg==timeoutMsg)
 	{
 		// If we receive the timeoutMsg, that it's time to generate and to send the message
 		EV << "Rand delay expired, sending the new message and restarting timer\n";
 		message = generateMsg();
-		send(message, "downLayer");
+		send(message, "downLayer$o");
 		delay = par("delayTime");
 		scheduleAt(simTime()+delay, timeoutMsg);
 	}
 	else // message arrived
 	{
+		App_pck *handledMsg = check_and_cast<App_pck *>(msg);
 		// Data packet received!
-		EV << "Received from downLayer: " << msg->getData() << "\n";//TODO change that we want to print
+		EV << "Received from downLayer: " << handledMsg->getData() << "\n";//TODO change that we want to print
 		delete msg;
 
 	}
@@ -54,10 +56,8 @@ void App::handleMessage(App_pck *msg)
 App_pck *App::generateMsg()
 {
 	// Generate a random data in application layer with a different length .
-   // int i;
-	int dataLgth = par("dataLetgth");
-
-	App_pck *data = new App_pck("data");
+	int dataLgth = par("dataLength");
+	App_pck *data = new App_pck("Application data");
 	data->setByteLength(dataLgth);
 
 //	char msgdata[dataLgth];

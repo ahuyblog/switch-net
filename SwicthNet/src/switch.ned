@@ -23,6 +23,7 @@ simple Switch
     parameters:
         int tableLength;
         double ageingTime @unit(s);
+        double latencyTime @unit(s);
         @display("i=block/switch");
     gates:
         input in[];

@@ -1,3 +1,4 @@
 # Partial Tkenv config file -- see $HOME/.tkenvrc as well
-inspector "LanNet" "LanNet" "2" "607x342+692+280:normal"
+inspector "LanNet" "LanNet" "2" "607x342+671+336:normal"
+inspector "LanNet.switch" "Switch" "1" "460x315+652+52:normal"
 

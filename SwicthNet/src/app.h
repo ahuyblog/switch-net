@@ -30,7 +30,7 @@ public:
 	App();
 protected:
 	virtual void initialize();
-    virtual void handleMessage(App_pck *msg);
+    virtual void handleMessage(cMessage *msg);
     virtual App_pck *generateMsg();
   private:
     simtime_t delay;  // timeout
