@@ -21,23 +21,20 @@
 #include <omnetpp.h>
 #include "Eth_pck_m.h"
 
-struct FilterTable{
+typedef struct FilterTable{
 		int gate;
 		unsigned char mac[6];
 	}FilterTable;
 
 class Switch : public cSimpleModule
 {
+
 public:
 	Switch();
 
 protected:
 	int tblLength;
-	struct FilterTable{
-				int gate;
-				unsigned char mac[6];
-	}dataBase[];
-
+	FilterTable *dataBase;
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
 };

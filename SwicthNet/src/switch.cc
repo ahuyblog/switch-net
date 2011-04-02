@@ -20,7 +20,7 @@ Define_Module(Switch);
 Switch::Switch()
 {
 	tblLength = par("tableLength");
-	dataBase = FilterTable[tblLength];
+	dataBase = new FilterTable[tblLength];
 }
 
 void Switch::initialize()
