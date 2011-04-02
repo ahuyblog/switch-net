@@ -17,15 +17,25 @@
 #define __SWICTHNET_IP_H_
 
 #include <omnetpp.h>
+#include <stdio.h>
+#include <string.h>
+#include "IP_pck_m.h"
+#include "Eth_pck_m.h"
+#include "App_pck_m.h"
 
 /**
  * TODO - Generated class
  */
 class Ip : public cSimpleModule
 {
-  protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+	private:
+		int *randArr;
+	protected:
+		virtual void initialize();
+		virtual void handleMessage(cMessage *msg);
+		virtual void processMsgFromHigherLayer(App_pck *packet);
+		virtual void processMsgFromLowerLayer(IP_pck *packet);
+		char *myIp;
 };
 
 #endif

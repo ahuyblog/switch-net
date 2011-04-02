@@ -23,7 +23,7 @@
  * 
  * 
  * 
- * 	unsigned short verHlengTos;
+ * 	unsigned short verHlengthTos;
  * 	unsigned short length;
  * 	unsigned short ident;
  * 	unsigned short f_frOffset;
@@ -39,7 +39,7 @@
 class IP_pck : public ::cPacket
 {
   protected:
-    unsigned short verHlengTos_var;
+    unsigned short verHlengthTos_var;
     unsigned short length_var;
     unsigned short ident_var;
     unsigned short f_frOffset_var;
@@ -62,8 +62,8 @@ class IP_pck : public ::cPacket
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
-    virtual unsigned short getVerHlengTos() const;
-    virtual void setVerHlengTos(unsigned short verHlengTos_var);
+    virtual unsigned short getVerHlengthTos() const;
+    virtual void setVerHlengthTos(unsigned short verHlengthTos_var);
     virtual unsigned short getLength() const;
     virtual void setLength(unsigned short length_var);
     virtual unsigned short getIdent() const;

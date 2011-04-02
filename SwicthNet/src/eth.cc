@@ -26,5 +26,16 @@ void Eth::initialize()
 
 void Eth::handleMessage(cMessage *msg)
 {
-    // TODO - Generated method body
+	if (msg->arrivedOn("downLayer"))
+	    	processMsgFromLowerLayer(check_and_cast<Eth_pck *>(msg));
+	else
+	    	processMsgFromHigherLayer(check_and_cast<IP_pck *>(msg));
+}
+void Eth::processMsgFromHigherLayer(IP_pck *packet)
+{
+
+}
+void Eth::processMsgFromLowerLayer(Eth_pck *packet)
+{
+
 }

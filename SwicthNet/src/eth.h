@@ -26,6 +26,8 @@ class Eth : public cSimpleModule
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    virtual void processMsgFromHigherLayer(App_pck *packet);
+    virtual void processMsgFromLowerLayer(IP_pck *packet);
 };
 
 #endif

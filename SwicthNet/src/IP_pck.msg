@@ -21,7 +21,7 @@ packet IP_pck {
 //    string anotherField;
 //    double arrayField1[];
 //    double arrayField2[10];
-	unsigned short verHlengTos;
+	unsigned short verHlengthTos;
 	unsigned short length;
 	unsigned short ident;
 	unsigned short f_frOffset;
