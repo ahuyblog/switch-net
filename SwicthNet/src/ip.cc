@@ -31,6 +31,7 @@ Define_Module(Ip);
 
 void Ip::initialize()
 {
+	EV << "Initialize IP layer: \n"<< getName();
 	// init my ip
     myIp = new char[4];
     myIp[0] = 172;
@@ -52,7 +53,8 @@ void Ip::initialize()
 
 void Ip::handleMessage(cMessage *msg)
 {
-    if (msg->arrivedOn("downLayer$i"))
+	EV << "handeling message!!!\n"<< msg->getName();
+	if (msg->arrivedOn("downLayer$i"))
     	processMsgFromLowerLayer(check_and_cast<IP_pck *>(msg));
     else
     	processMsgFromHigherLayer(check_and_cast<App_pck *>(msg));
@@ -77,6 +79,7 @@ void Ip::processMsgFromLowerLayer(IP_pck *packet)
 }
 void Ip::processMsgFromHigherLayer(App_pck *packet)
 {
+	EV << "Message arrived from Higher level\n";
 	int i=0;
 	IP_pck *ipPacket = new IP_pck("IP");
 	ipPacket->setF_frOffset(FLAGS_OFFSET);
@@ -107,5 +110,6 @@ void Ip::processMsgFromHigherLayer(App_pck *packet)
 	}
 	ipPacket->setCheckSum(checksum);
 	ipPacket->encapsulate(packet);
+	EV << "Sending message to Downlayer\n";
 	send(ipPacket,"downLayer$o");
 }
