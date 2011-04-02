@@ -31,8 +31,8 @@ Define_Module(Ip);
 
 void Ip::initialize()
 {
-	temp = par("tempId");
-	EV << "Initialize IP layer: "<< temp <<" IndeX: "<< getIndex()<<" Vector: "<< getVectorSize()<< "\n";
+	ipId = par("ip4");
+	EV << "Initialize IP layer: "<< ipId <<"\n";
 	// init my ip
     myIp = new char[4];
     myIp[0] = 172;

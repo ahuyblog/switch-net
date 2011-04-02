@@ -29,6 +29,7 @@ void Switch::initialize()
 	dataBase = new FilterTable[tblLength];
 	agTime = par("ageingTime");
 	latency = par("latencyTime");
+	queue = 0;
 	int i;
 	for (i = 0; i < tblLength; i++)
 		resetRow(i);//reset table entry at row i
@@ -56,22 +57,24 @@ void Switch::handleMessage(cMessage *msg)
 	}
 	else if(msg == sendEvent)
 	{
-		forward(handledMsg);//forwarding the Eth packet that arrived
+		forward(handledMsg[queue]);//forwarding the Eth packet that arrived
+		queue--;
 	}
 	else
 	{
-		handledMsg = check_and_cast<Eth_pck *>(msg);
-		int arrivedPort = handledMsg->getArrivalGateId();
+		handledMsg[queue] = check_and_cast<Eth_pck *>(msg);
+		int arrivedPort = handledMsg[queue]->getArrivalGateId();
 		if (dataBase[arrivedPort].gate == -1)
 		{
 			dataBase[arrivedPort].gate = arrivedPort;//new table entry:
 			dataBase[arrivedPort].lastEvnt = 0;
-			copySrcMac(handledMsg, dataBase[arrivedPort].mac);// copy MAC src to the table at port that msg arrived
+			copySrcMac(handledMsg[queue], dataBase[arrivedPort].mac);// copy MAC src to the table at port that msg arrived
 		}
 		else//table entry present
 		{
 			dataBase[arrivedPort].lastEvnt += simTime();//update last event field???need to check
 		}
+		queue++;
 		scheduleAt(simTime()+latency, sendEvent);
 
 	}

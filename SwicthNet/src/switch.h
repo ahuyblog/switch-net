@@ -39,8 +39,9 @@ protected:
 	simtime_t agTime;//Ageing time for each table row
 	simtime_t latency;//Deley for forwording message
 	int tblLength;
-	Eth_pck *handledMsg;
+	Eth_pck *handledMsg[];
 	FilterTable *dataBase;
+	int queue;
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
     virtual void copySrcMac(Eth_pck *src, unsigned char *dest);

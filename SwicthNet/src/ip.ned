@@ -22,7 +22,7 @@ simple Ip
 {
     
     parameters:
-        int tempId = default(0);
+        int ip4;
         int limit = default(1);
         @display("i=block/layer");
     gates:

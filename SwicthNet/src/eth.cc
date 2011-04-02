@@ -21,23 +21,24 @@ Define_Module(Eth);
 void Eth::initialize()
 {
 	 myMac = new char[6];
-	    myMac[0] = 11;
-	    myMac[1] = 11;
-	    myMac[2] = 11;
-	    myMac[3] = 11;
-	    myMac[4] = 11;
-	    myMac[5] = getIndex();
-	    // init rand array for ip randomize
-	    int size = getVectorSize()-1;
-	    randArr = new int[size];
-	    for (int i=0,j=0; j<size; i++)
-	    {
-	    	if (i != getIndex())
-	    	{
-	    		randArr[j]=i;
-	    		j++;
-	    	}
-	    }
+	 myMac[0] = 11;
+	 myMac[1] = 11;
+	 myMac[2] = 11;
+	 myMac[3] = 11;
+	 myMac[4] = 11;
+	 myMac[5] = par("mac6");
+	 EV << "Initialize Eth layer: "<< myMac[5] <<"\n";
+	 // init rand array for ip randomize
+	 int size = getVectorSize()-1;
+	 randArr = new int[size];
+	 for (int i=0,j=0; j<size; i++)
+	 {
+		 if (i != getIndex())
+		 {
+			 randArr[j]=i;
+			 j++;
+		 }
+	 }
 }
 
 void Eth::handleMessage(cMessage *msg)
@@ -54,4 +55,8 @@ void Eth::processMsgFromHigherLayer(IP_pck *packet)
 void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 {
 
+}
+char *Eth::getMacFromTable(char* ip)
+{
+	return NULL;//TODO change this!!!
 }

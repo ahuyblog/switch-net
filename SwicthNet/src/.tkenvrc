@@ -1,8 +1,7 @@
 # Partial Tkenv config file -- see $HOME/.tkenvrc as well
-inspector "LanNet.host[2]" "Host" "2" "607x342+652+133:normal"
-inspector "LanNet.host[3]" "Host" "2" "607x342+645+428:normal"
-inspector "LanNet.host[0]" "Host" "2" "607x342+318+133:normal"
-inspector "LanNet" "LanNet" "2" "607x342+671+189:normal"
-inspector "LanNet.host[1]" "Host" "2" "607x344+358+426:normal"
-inspector "simulation.scheduled-events.IP" "IP_pck" "1" "573x475+461+173:normal"
+inspector "LanNet.host[2]" "Host" "2" "607x342+706+97:normal"
+inspector "LanNet.host[3]" "Host" "2" "607x342+647+428:normal"
+inspector "LanNet.host[0]" "Host" "2" "607x342+79+116:normal"
+inspector "LanNet" "LanNet" "2" "607x342+671+243:normal"
+inspector "LanNet.host[1]" "Host" "2" "607x344+74+404:normal"
 

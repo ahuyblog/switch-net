@@ -31,7 +31,7 @@ class Ip : public cSimpleModule
 	private:
 		int *randArr;
 	protected:
-		int temp;
+		int ipId;
 		virtual void initialize();
 		virtual void handleMessage(cMessage *msg);
 		virtual void processMsgFromHigherLayer(App_pck *packet);
