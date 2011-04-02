@@ -52,7 +52,7 @@ void Ip::initialize()
 
 void Ip::handleMessage(cMessage *msg)
 {
-    if (msg->arrivedOn("downLayer"))
+    if (msg->arrivedOn("downLayer$i"))
     	processMsgFromLowerLayer(check_and_cast<IP_pck *>(msg));
     else
     	processMsgFromHigherLayer(check_and_cast<App_pck *>(msg));
@@ -68,7 +68,7 @@ void Ip::processMsgFromLowerLayer(IP_pck *packet)
 	if (isMine)
 	{
 		App_pck *appPacket = check_and_cast<App_pck *>(packet->decapsulate());
-		send(appPacket,"upLayer");
+		send(appPacket,"upLayer$o");
 	}
 	else
 	{
@@ -107,5 +107,5 @@ void Ip::processMsgFromHigherLayer(App_pck *packet)
 	}
 	ipPacket->setCheckSum(checksum);
 	ipPacket->encapsulate(packet);
-	send(ipPacket,"downLayer");
+	send(ipPacket,"downLayer$o");
 }
