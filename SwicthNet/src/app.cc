@@ -24,26 +24,23 @@ App::App()
 }
 void App::initialize()
 {
-	timeout = uniform(0,10);//TODO 10 needed to be defined in ini file
-	// Generate and send initial message.
-	EV << "Sending initial message\n";
-	message = generateMsg();
+	//Set timer delay befor sending the first message
+	simtime_t delay = par("delayTime");
+	EV << "Initial delay timer sets\n";
 	timeoutMsg = new cMessage("Data packet generated");
-	send(message, "downLayer");
-	scheduleAt(simTime()+timeout, timeoutMsg);
-	// TODO - Generated method body
+	scheduleAt(simTime()+delay, timeoutMsg);
 }
 
 void App::handleMessage(App_pck *msg)
 {
 	if (msg==timeoutMsg)
 	{
-		// If we receive the timeoutMsg, that it's time to generate another message
-		EV << "Rand timeout expired, sending the new message and restarting timer\n";
+		// If we receive the timeoutMsg, that it's time to generate and to send the message
+		EV << "Rand delay expired, sending the new message and restarting timer\n";
 		message = generateMsg();
 		send(message, "downLayer");
-		timeout = uniform(0,10);//TODO 10 needed to be defined in ini file
-		scheduleAt(simTime()+timeout, timeoutMsg);
+		delay = par("delayTime");
+		scheduleAt(simTime()+delay, timeoutMsg);
 	}
 	else // message arrived
 	{
@@ -51,29 +48,23 @@ void App::handleMessage(App_pck *msg)
 		EV << "Received from downLayer: " << msg->getData() << "\n";//TODO change that we want to print
 		delete msg;
 
-//		// Also delete the stored message and cancel the timeout event.
-//		EV << "Timer cancelled.\n";
-//		cancelEvent(timeoutEvent);
-//		delete message;
-
-		// Ready to send another one.
-//		message = generateNewMessage();
-//		sendCopyOf(message);
-//		scheduleAt(simTime()+timeout, timeoutEvent);
 	}
-	// TODO - Generated method body
 }
 
 App_pck *App::generateMsg()
 {
 	// Generate a random data in application layer with a different length .
-    int i;
-	int dataLength = uniform(0,100);//TODO 100 needed to be defined in *.ini file
-	char msgdata[dataLength];
-	for (i = 0; i < dataLength; i++)
-		msgdata[i]=uniform(50,125);//random data generation
-    App_pck *msg = new App_pck();
-    msg->setData(msgdata);
-    return msg;
+   // int i;
+	int dataLgth = par("dataLetgth");
+
+	App_pck *data = new App_pck("data");
+	data->setByteLength(dataLgth);
+
+//	char msgdata[dataLgth];
+//	for (i = 0; i < dataLgth; i++)
+//		msgdata[i]=uniform(50,125);//random data generation
+//    App_pck *msg = new App_pck();
+//    msg->setData(msgdata);
+    return data;
 }
 

@@ -27,7 +27,7 @@ simple Ip
         int ip1 = default(172); // the numeber of the host
         int ip2 = default(168);
         int ip3 = default(32);
-        int ip3 = default(0);
+        int ip4 = default(1);
     gates:
         inout upLayer;
         inout downLayer;

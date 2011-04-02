@@ -33,7 +33,7 @@ protected:
     virtual void handleMessage(App_pck *msg);
     virtual App_pck *generateMsg();
   private:
-    simtime_t timeout;  // timeout
+    simtime_t delay;  // timeout
     cMessage *timeoutMsg;  // holds pointer to the timeout self-message
     App_pck *message;  // message that has to be re-sent on timeout
 };

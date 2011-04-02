@@ -17,9 +17,21 @@
 
 Define_Module(Switch);
 
+Switch::Switch()
+{
+	tblLength = par("tableLength");
+	dataBase = FilterTable[tblLength];
+}
+
 void Switch::initialize()
 {
-    // TODO - Generated method body
+	int i,j;
+	for (i = 0; i < tblLength; i++)
+	{
+		dataBase[i].gate = -1;
+		for (j = 0; j < 6; j++)
+			dataBase[i].mac[j] = 0;
+	}
 }
 
 void Switch::handleMessage(cMessage *msg)

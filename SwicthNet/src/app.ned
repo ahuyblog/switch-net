@@ -21,6 +21,8 @@ package SwicthNet.src;
 simple App
 {
     parameters:
+        volatile double delayTime @unit(s);   // delay before sending back message
+        volatile int dataLength;
         @display("i=block/app");
     gates:
         inout downLayer;

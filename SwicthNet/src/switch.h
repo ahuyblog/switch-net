@@ -16,14 +16,28 @@
 #ifndef __SWICTHNET_SWITCH_H_
 #define __SWICTHNET_SWITCH_H_
 
+#include <stdio.h>
+#include <string.h>
 #include <omnetpp.h>
+#include "Eth_pck_m.h"
 
-/**
- * TODO - Generated class
- */
+struct FilterTable{
+		int gate;
+		unsigned char mac[6];
+	}FilterTable;
+
 class Switch : public cSimpleModule
 {
-  protected:
+public:
+	Switch();
+
+protected:
+	int tblLength;
+	struct FilterTable{
+				int gate;
+				unsigned char mac[6];
+	}dataBase[];
+
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
 };

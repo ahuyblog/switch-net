@@ -24,24 +24,24 @@ LIBS =
 
 # Output directory
 PROJECT_OUTPUT_DIR = ../out
-PROJECTRELATIVE_PATH = src
+PROJECTRELATIVE_PATH = /src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
-    $O/ip.o \
-    $O/switch.o \
     $O/app.o \
     $O/eth.o \
+    $O/ip.o \
+    $O/switch.o \
     $O/App_pck_m.o \
-    $O/IP_pck_m.o \
-    $O/Eth_pck_m.o
+    $O/Eth_pck_m.o \
+    $O/IP_pck_m.o
 
 # Message files
 MSGFILES = \
     App_pck.msg \
-    IP_pck.msg \
-    Eth_pck.msg
+    Eth_pck.msg \
+    IP_pck.msg
 
 #------------------------------------------------------------------------------
 
@@ -111,20 +111,18 @@ depend:
 	$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/switch.o: switch.cc \
-	switch.h
-$O/ip.o: ip.cc \
-	ip.h
-$O/eth.o: eth.cc \
-	eth.h \
-	Eth_pck_m.h
-$O/IP_pck_m.o: IP_pck_m.cc \
-	IP_pck_m.h
 $O/App_pck_m.o: App_pck_m.cc \
-	App_pck_m.h
+  ./App_pck_m.h
 $O/Eth_pck_m.o: Eth_pck_m.cc \
-	Eth_pck_m.h
+  ./Eth_pck_m.h
 $O/app.o: app.cc \
-	app.h \
-	App_pck_m.h
-
+  ./App_pck_m.h \
+  ./app.h
+$O/eth.o: eth.cc \
+  ./Eth_pck_m.h \
+  ./eth.h
+$O/ip.o: ip.cc \
+  ./ip.h
+$O/switch.o: switch.cc \
+  ./switch.h \
+  ./Eth_pck_m.h

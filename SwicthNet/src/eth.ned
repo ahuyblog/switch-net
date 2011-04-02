@@ -18,8 +18,11 @@ package SwicthNet.src;
 //
 // TODO auto-generated module
 //
+
+
 simple Eth
 {
+    
     parameters:
         @display("i=block/ifcard");
         string mac;

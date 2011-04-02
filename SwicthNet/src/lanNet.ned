@@ -26,18 +26,20 @@ network LanNet
         }
     submodules:
         host[4]: Host;
-        switch: Switch;
+        switch: Switch {
+            @display("i=,gold");
+        }
     connections:
-        
+
         switch.in++ <-- Channel <-- host[0].out;
         host[0].in <-- Channel <-- switch.out++;
-        
+
         switch.in++ <-- Channel <-- host[1].out;
         host[1].in <-- Channel <-- switch.out++;
-        
+
         switch.in++ <-- Channel <-- host[2].out;
         host[2].in <-- Channel <-- switch.out++;
-        
+
         switch.in++ <-- Channel <-- host[3].out;
         host[3].in <-- Channel <-- switch.out++;
 }

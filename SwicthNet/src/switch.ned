@@ -21,9 +21,10 @@ package SwicthNet.src;
 simple Switch
 {
     parameters:
-        //@display("i=,gold");
+        int tableLength;
+        double ageingTime @unit(s);
         @display("i=block/switch");
-        gates:
+    gates:
         input in[];
         output out[];
 }

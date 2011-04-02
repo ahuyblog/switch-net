@@ -23,14 +23,14 @@ module Host
 
     submodules:
         ether: Eth {
-            @display("p=70,209");
+            @display("p=70,209;i=,lightGreen");
         }
         ipLayer: Ip {
-            @display("p=70,130");
+            @display("p=70,130;i=,dodgerBlue");
         }
         app: App {
 
-            @display("p=70,56");
+            @display("p=70,56;i=,pink");
         }
 
     connections:
