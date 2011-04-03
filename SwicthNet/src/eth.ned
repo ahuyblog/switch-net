@@ -25,7 +25,7 @@ simple Eth
     
     parameters:
         @display("i=block/ifcard");
-        int mac6;
+        int id;
         int hostNum = default(4);
 		volatile double aging @unit(s);
     gates:

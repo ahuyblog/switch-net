@@ -25,22 +25,20 @@
  * 
  * 
  *     
- *     unsigned char preamble[8];
+ *     
  *     unsigned char macDest[6];
  *     unsigned char macSrc[6];
  *     unsigned short length;
- *     unsigned long fcs;
+ *     
  * }
  * </pre>
  */
 class Eth_pck : public ::cPacket
 {
   protected:
-    unsigned char preamble_var[8];
     unsigned char macDest_var[6];
     unsigned char macSrc_var[6];
     unsigned short length_var;
-    unsigned long fcs_var;
 
     // protected and unimplemented operator==(), to prevent accidental usage
     bool operator==(const Eth_pck&);
@@ -55,9 +53,6 @@ class Eth_pck : public ::cPacket
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
-    virtual unsigned int getPreambleArraySize() const;
-    virtual unsigned char getPreamble(unsigned int k) const;
-    virtual void setPreamble(unsigned int k, unsigned char preamble_var);
     virtual unsigned int getMacDestArraySize() const;
     virtual unsigned char getMacDest(unsigned int k) const;
     virtual void setMacDest(unsigned int k, unsigned char macDest_var);
@@ -66,8 +61,6 @@ class Eth_pck : public ::cPacket
     virtual void setMacSrc(unsigned int k, unsigned char macSrc_var);
     virtual unsigned short getLength() const;
     virtual void setLength(unsigned short length_var);
-    virtual unsigned long getFcs() const;
-    virtual void setFcs(unsigned long fcs_var);
 };
 
 inline void doPacking(cCommBuffer *b, Eth_pck& obj) {obj.parsimPack(b);}

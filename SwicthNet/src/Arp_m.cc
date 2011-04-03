@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgc 4.1 from Eth_pck.msg.
+// Generated file, do not edit! Created by opp_msgc 4.1 from Arp.msg.
 //
 
 // Disable warnings about unused variables, empty switch stmts, etc:
@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <sstream>
-#include "Eth_pck_m.h"
+#include "Arp_m.h"
 
 // Template rule which fires if a struct or class doesn't have operator<<
 template<typename T>
@@ -30,104 +30,104 @@ void doUnpacking(cCommBuffer *, T& t) {
 
 
 
-Register_Class(Eth_pck);
+Register_Class(Arp);
 
-Eth_pck::Eth_pck(const char *name, int kind) : cPacket(name,kind)
+Arp::Arp(const char *name, int kind) : cPacket(name,kind)
 {
+    this->type_var = 0;
+    for (unsigned int i=0; i<4; i++)
+        this->ip_var[i] = 0;
     for (unsigned int i=0; i<6; i++)
-        this->macDest_var[i] = 0;
-    for (unsigned int i=0; i<6; i++)
-        this->macSrc_var[i] = 0;
-    this->length_var = 0;
+        this->mac_var[i] = 0;
 }
 
-Eth_pck::Eth_pck(const Eth_pck& other) : cPacket()
+Arp::Arp(const Arp& other) : cPacket()
 {
     setName(other.getName());
     operator=(other);
 }
 
-Eth_pck::~Eth_pck()
+Arp::~Arp()
 {
 }
 
-Eth_pck& Eth_pck::operator=(const Eth_pck& other)
+Arp& Arp::operator=(const Arp& other)
 {
     if (this==&other) return *this;
     cPacket::operator=(other);
+    this->type_var = other.type_var;
+    for (unsigned int i=0; i<4; i++)
+        this->ip_var[i] = other.ip_var[i];
     for (unsigned int i=0; i<6; i++)
-        this->macDest_var[i] = other.macDest_var[i];
-    for (unsigned int i=0; i<6; i++)
-        this->macSrc_var[i] = other.macSrc_var[i];
-    this->length_var = other.length_var;
+        this->mac_var[i] = other.mac_var[i];
     return *this;
 }
 
-void Eth_pck::parsimPack(cCommBuffer *b)
+void Arp::parsimPack(cCommBuffer *b)
 {
     cPacket::parsimPack(b);
-    doPacking(b,this->macDest_var,6);
-    doPacking(b,this->macSrc_var,6);
-    doPacking(b,this->length_var);
+    doPacking(b,this->type_var);
+    doPacking(b,this->ip_var,4);
+    doPacking(b,this->mac_var,6);
 }
 
-void Eth_pck::parsimUnpack(cCommBuffer *b)
+void Arp::parsimUnpack(cCommBuffer *b)
 {
     cPacket::parsimUnpack(b);
-    doUnpacking(b,this->macDest_var,6);
-    doUnpacking(b,this->macSrc_var,6);
-    doUnpacking(b,this->length_var);
+    doUnpacking(b,this->type_var);
+    doUnpacking(b,this->ip_var,4);
+    doUnpacking(b,this->mac_var,6);
 }
 
-unsigned int Eth_pck::getMacDestArraySize() const
+unsigned short Arp::getType() const
+{
+    return type_var;
+}
+
+void Arp::setType(unsigned short type_var)
+{
+    this->type_var = type_var;
+}
+
+unsigned int Arp::getIpArraySize() const
+{
+    return 4;
+}
+
+char Arp::getIp(unsigned int k) const
+{
+    if (k>=4) throw cRuntimeError("Array of size 4 indexed by %lu", (unsigned long)k);
+    return ip_var[k];
+}
+
+void Arp::setIp(unsigned int k, char ip_var)
+{
+    if (k>=4) throw cRuntimeError("Array of size 4 indexed by %lu", (unsigned long)k);
+    this->ip_var[k] = ip_var;
+}
+
+unsigned int Arp::getMacArraySize() const
 {
     return 6;
 }
 
-unsigned char Eth_pck::getMacDest(unsigned int k) const
+char Arp::getMac(unsigned int k) const
 {
     if (k>=6) throw cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
-    return macDest_var[k];
+    return mac_var[k];
 }
 
-void Eth_pck::setMacDest(unsigned int k, unsigned char macDest_var)
+void Arp::setMac(unsigned int k, char mac_var)
 {
     if (k>=6) throw cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
-    this->macDest_var[k] = macDest_var;
+    this->mac_var[k] = mac_var;
 }
 
-unsigned int Eth_pck::getMacSrcArraySize() const
-{
-    return 6;
-}
-
-unsigned char Eth_pck::getMacSrc(unsigned int k) const
-{
-    if (k>=6) throw cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
-    return macSrc_var[k];
-}
-
-void Eth_pck::setMacSrc(unsigned int k, unsigned char macSrc_var)
-{
-    if (k>=6) throw cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
-    this->macSrc_var[k] = macSrc_var;
-}
-
-unsigned short Eth_pck::getLength() const
-{
-    return length_var;
-}
-
-void Eth_pck::setLength(unsigned short length_var)
-{
-    this->length_var = length_var;
-}
-
-class Eth_pckDescriptor : public cClassDescriptor
+class ArpDescriptor : public cClassDescriptor
 {
   public:
-    Eth_pckDescriptor();
-    virtual ~Eth_pckDescriptor();
+    ArpDescriptor();
+    virtual ~ArpDescriptor();
 
     virtual bool doesSupport(cObject *obj) const;
     virtual const char *getProperty(const char *propertyname) const;
@@ -146,34 +146,34 @@ class Eth_pckDescriptor : public cClassDescriptor
     virtual void *getFieldStructPointer(void *object, int field, int i) const;
 };
 
-Register_ClassDescriptor(Eth_pckDescriptor);
+Register_ClassDescriptor(ArpDescriptor);
 
-Eth_pckDescriptor::Eth_pckDescriptor() : cClassDescriptor("Eth_pck", "cPacket")
+ArpDescriptor::ArpDescriptor() : cClassDescriptor("Arp", "cPacket")
 {
 }
 
-Eth_pckDescriptor::~Eth_pckDescriptor()
+ArpDescriptor::~ArpDescriptor()
 {
 }
 
-bool Eth_pckDescriptor::doesSupport(cObject *obj) const
+bool ArpDescriptor::doesSupport(cObject *obj) const
 {
-    return dynamic_cast<Eth_pck *>(obj)!=NULL;
+    return dynamic_cast<Arp *>(obj)!=NULL;
 }
 
-const char *Eth_pckDescriptor::getProperty(const char *propertyname) const
+const char *ArpDescriptor::getProperty(const char *propertyname) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     return basedesc ? basedesc->getProperty(propertyname) : NULL;
 }
 
-int Eth_pckDescriptor::getFieldCount(void *object) const
+int ArpDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     return basedesc ? 3+basedesc->getFieldCount(object) : 3;
 }
 
-unsigned int Eth_pckDescriptor::getFieldTypeFlags(void *object, int field) const
+unsigned int ArpDescriptor::getFieldTypeFlags(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -182,14 +182,14 @@ unsigned int Eth_pckDescriptor::getFieldTypeFlags(void *object, int field) const
         field -= basedesc->getFieldCount(object);
     }
     static unsigned int fieldTypeFlags[] = {
-        FD_ISARRAY | FD_ISEDITABLE,
-        FD_ISARRAY | FD_ISEDITABLE,
         FD_ISEDITABLE,
+        FD_ISARRAY | FD_ISEDITABLE,
+        FD_ISARRAY | FD_ISEDITABLE,
     };
     return (field>=0 && field<3) ? fieldTypeFlags[field] : 0;
 }
 
-const char *Eth_pckDescriptor::getFieldName(void *object, int field) const
+const char *ArpDescriptor::getFieldName(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -198,24 +198,24 @@ const char *Eth_pckDescriptor::getFieldName(void *object, int field) const
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldNames[] = {
-        "macDest",
-        "macSrc",
-        "length",
+        "type",
+        "ip",
+        "mac",
     };
     return (field>=0 && field<3) ? fieldNames[field] : NULL;
 }
 
-int Eth_pckDescriptor::findField(void *object, const char *fieldName) const
+int ArpDescriptor::findField(void *object, const char *fieldName) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
-    if (fieldName[0]=='m' && strcmp(fieldName, "macDest")==0) return base+0;
-    if (fieldName[0]=='m' && strcmp(fieldName, "macSrc")==0) return base+1;
-    if (fieldName[0]=='l' && strcmp(fieldName, "length")==0) return base+2;
+    if (fieldName[0]=='t' && strcmp(fieldName, "type")==0) return base+0;
+    if (fieldName[0]=='i' && strcmp(fieldName, "ip")==0) return base+1;
+    if (fieldName[0]=='m' && strcmp(fieldName, "mac")==0) return base+2;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
-const char *Eth_pckDescriptor::getFieldTypeString(void *object, int field) const
+const char *ArpDescriptor::getFieldTypeString(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -224,14 +224,14 @@ const char *Eth_pckDescriptor::getFieldTypeString(void *object, int field) const
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldTypeStrings[] = {
-        "unsigned char",
-        "unsigned char",
         "unsigned short",
+        "char",
+        "char",
     };
     return (field>=0 && field<3) ? fieldTypeStrings[field] : NULL;
 }
 
-const char *Eth_pckDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
+const char *ArpDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -244,7 +244,7 @@ const char *Eth_pckDescriptor::getFieldProperty(void *object, int field, const c
     }
 }
 
-int Eth_pckDescriptor::getArraySize(void *object, int field) const
+int ArpDescriptor::getArraySize(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -252,15 +252,15 @@ int Eth_pckDescriptor::getArraySize(void *object, int field) const
             return basedesc->getArraySize(object, field);
         field -= basedesc->getFieldCount(object);
     }
-    Eth_pck *pp = (Eth_pck *)object; (void)pp;
+    Arp *pp = (Arp *)object; (void)pp;
     switch (field) {
-        case 0: return 6;
-        case 1: return 6;
+        case 1: return 4;
+        case 2: return 6;
         default: return 0;
     }
 }
 
-std::string Eth_pckDescriptor::getFieldAsString(void *object, int field, int i) const
+std::string ArpDescriptor::getFieldAsString(void *object, int field, int i) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -268,16 +268,16 @@ std::string Eth_pckDescriptor::getFieldAsString(void *object, int field, int i) 
             return basedesc->getFieldAsString(object,field,i);
         field -= basedesc->getFieldCount(object);
     }
-    Eth_pck *pp = (Eth_pck *)object; (void)pp;
+    Arp *pp = (Arp *)object; (void)pp;
     switch (field) {
-        case 0: return ulong2string(pp->getMacDest(i));
-        case 1: return ulong2string(pp->getMacSrc(i));
-        case 2: return ulong2string(pp->getLength());
+        case 0: return ulong2string(pp->getType());
+        case 1: return long2string(pp->getIp(i));
+        case 2: return long2string(pp->getMac(i));
         default: return "";
     }
 }
 
-bool Eth_pckDescriptor::setFieldAsString(void *object, int field, int i, const char *value) const
+bool ArpDescriptor::setFieldAsString(void *object, int field, int i, const char *value) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -285,16 +285,16 @@ bool Eth_pckDescriptor::setFieldAsString(void *object, int field, int i, const c
             return basedesc->setFieldAsString(object,field,i,value);
         field -= basedesc->getFieldCount(object);
     }
-    Eth_pck *pp = (Eth_pck *)object; (void)pp;
+    Arp *pp = (Arp *)object; (void)pp;
     switch (field) {
-        case 0: pp->setMacDest(i,string2ulong(value)); return true;
-        case 1: pp->setMacSrc(i,string2ulong(value)); return true;
-        case 2: pp->setLength(string2ulong(value)); return true;
+        case 0: pp->setType(string2ulong(value)); return true;
+        case 1: pp->setIp(i,string2long(value)); return true;
+        case 2: pp->setMac(i,string2long(value)); return true;
         default: return false;
     }
 }
 
-const char *Eth_pckDescriptor::getFieldStructName(void *object, int field) const
+const char *ArpDescriptor::getFieldStructName(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -310,7 +310,7 @@ const char *Eth_pckDescriptor::getFieldStructName(void *object, int field) const
     return (field>=0 && field<3) ? fieldStructNames[field] : NULL;
 }
 
-void *Eth_pckDescriptor::getFieldStructPointer(void *object, int field, int i) const
+void *ArpDescriptor::getFieldStructPointer(void *object, int field, int i) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -318,7 +318,7 @@ void *Eth_pckDescriptor::getFieldStructPointer(void *object, int field, int i) c
             return basedesc->getFieldStructPointer(object, field, i);
         field -= basedesc->getFieldCount(object);
     }
-    Eth_pck *pp = (Eth_pck *)object; (void)pp;
+    Arp *pp = (Arp *)object; (void)pp;
     switch (field) {
         default: return NULL;
     }

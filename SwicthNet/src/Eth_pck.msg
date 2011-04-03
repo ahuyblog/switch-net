@@ -23,9 +23,9 @@ packet Eth_pck {
 //    double arrayField2[10];
 //    
     //Our Ethernet field defenitions 
-    unsigned char preamble[8];
+    //unsigned char preamble[8];
     unsigned char macDest[6];
     unsigned char macSrc[6];
     unsigned short length;
-    unsigned long fcs;
+    //unsigned long fcs;
 }

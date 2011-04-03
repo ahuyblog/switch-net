@@ -17,7 +17,7 @@
 // TODO generated message class
 //
 packet Arp {
-   unsigned short type; // request , reply
+   unsigned short type; // request=0 , reply=1
    char ip[4];
    char mac[6];
 }
