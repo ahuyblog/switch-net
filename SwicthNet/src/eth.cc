@@ -221,12 +221,51 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 	}
 	else // regular message need to pass to higher layer and update arp table
 	{
-
+		bool isMine = true;
+		for (unsigned int i=0;i<packet->getMacDestArraySize() && isMine;i++)
+		{
+			if (myMac[i] != packet->getMacDest(i))
+				isMine = false;
+		}
+		if (isMine) // message is mine
+		{
+			IP_pck *ipPacket = check_and_cast<IP_pck*>(packet->decapsulate());
+			send(ipPacket,"upLayer$o");
+		}
+		else // message is not mine
+		{
+			delete packet;
+		}
 	}
 }
+/*
+ * Description: function gets an IP packet and returns the mac
+ * 				if mac is not on table - returns NULL
+ */
 char *Eth::getMacFromTable(IP_pck* packet)
 {
-	return NULL;//TODO change this!!!
+	int index = UNDEFINED;
+	for (unsigned int j=0;j<iTable && index == UNDEFINED;j++)
+	{
+		bool isFound = true;
+		for (unsigned int i=0; i<packet->getDestIpArraySize() && isFound;i++)
+		{
+			if (table[j].destIp[i]!=packet->getDestIp(i))
+				isFound = false;
+		}
+		if (isFound)
+			index = j;
+	}
+	if (index != UNDEFINED)
+	{
+		char* destMac = new char[6];
+		for (int i=0; i<6;i++)
+		{
+			destMac[i]=table[index].mac[i];
+		}
+		return destMac;
+	}
+	return NULL;
 }
 /*
  * Description: will delete the correct entry from the table
@@ -240,9 +279,37 @@ void Eth::processSelfTimer(cMessage *msg)
  */
 IP_pck *Eth::checkForMore()
 {
+	unsigned int i=0;
+	char* mac=NULL;
+	for (i =0;i<fifo.max_size() && mac==NULL;i++)
+	{
+		mac=getMacFromTable((fifo[i]));
+	}
+	if (mac != NULL)
+	{
+		IP_pck *tempPacket= fifo[i];
+		fifo.erase(fifo.begin()+i);
+		return tempPacket;
+	}
 	return NULL;
 }
+/*
+ * Description: searching for an entry in the arp table. gets an IP returns the index in the table
+ */
 int Eth::searchEntry(char* ip)
 {
-	return UNDEFINED;
+	int index = UNDEFINED;
+	bool isFound = true;
+	for (unsigned int j=0;j<iTable && index == UNDEFINED;j++)
+	{
+		isFound=true;
+		for (int i=0; i<4 && isFound;i++)
+		{
+			if (table[j].destIp[i]!=ip[i])
+				isFound = false;
+		}
+		if (isFound)
+			return index;
+	}
+	return index;
 }
