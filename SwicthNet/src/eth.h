@@ -26,8 +26,8 @@
 using namespace std;
 typedef struct arpTable
 {
-	char destIp[4];
-	char mac[6];
+	unsigned char destIp[4];
+	unsigned char mac[6];
 	cMessage * timer;
 }arpTable;
 
@@ -39,14 +39,14 @@ class Eth : public cSimpleModule
     virtual void processMsgFromHigherLayer(IP_pck *packet);
     virtual void processMsgFromLowerLayer(Eth_pck *packet);
     virtual void processSelfTimer(cMessage *msg);
-    char *myMac;
-    char *myIp;
+    unsigned char *myMac;
+    unsigned char *myIp;
     arpTable table[10];
     unsigned int iTable;
   private:
-    virtual char *getMacFromTable(IP_pck* packet);
+    virtual unsigned char *getMacFromTable(IP_pck* packet);
     virtual IP_pck *checkForMore();
-    virtual int searchEntry(char* ip);
+    virtual int searchEntry(unsigned char* ip);
     int *randArr;
     void copyArpEntry(arpTable* dst,arpTable* src);
     vector<IP_pck*> fifo; // will hold all messeges that need to be sent

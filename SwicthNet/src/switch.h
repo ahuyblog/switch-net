@@ -26,9 +26,12 @@ using namespace std;
 typedef struct FilterTable{
 		int gate;
 		unsigned char mac[6];
-		simtime_t lastEvnt;
+		cMessage * selfEvent;
 	}FilterTable;
-
+typedef struct msgStore{
+	Eth_pck* msg;
+	cMessage* self;
+};
 class Switch : public cSimpleModule
 {
 
@@ -36,12 +39,10 @@ public:
 	Switch();
 
 protected:
-	cMessage *event;
-	cMessage *sendEvent;
 	simtime_t agTime;//Ageing time for each table row
 	simtime_t latency;//Deley for forwording message
 	int tblLength;
-	vector<Eth_pck*> msgQueue;
+	vector<msgStore> msgQueue;
 	Eth_pck *handledMsg;
 	FilterTable *dataBase;
     virtual void initialize();
@@ -49,6 +50,7 @@ protected:
     virtual void copySrcMac(Eth_pck *src, unsigned char *dest);
     void forward(Eth_pck *msgToForward);
     void resetRow(int index);
+    void initRow(int index);
 };
 
 #endif

@@ -34,14 +34,14 @@ void Eth::initialize()
 {
 	iTable = 0;
 	int myId = par("id");
-	myMac = new char[6];
+	myMac = new unsigned char[6];
 	myMac[0] = 17; // 11 HEX
 	myMac[1] = 17;
 	myMac[2] = 17;
 	myMac[3] = 17;
 	myMac[4] = 17;
 	myMac[5] = myId;
-	myIp = new char[4];
+	myIp = new unsigned char[4];
 	myIp[0] =IP1;
 	myIp[1] =IP2;
 	myIp[2] =IP3;
@@ -85,7 +85,7 @@ void Eth::processMsgFromHigherLayer(IP_pck *packet)
 		etherPacket->setMacSrc(i,myMac[i]);
 	}
 	etherPacket->setByteLength(14);
-	char *destMac = getMacFromTable(packet);
+	unsigned char *destMac = getMacFromTable(packet);
 	if (destMac != NULL)
 	{
 		for (i=0; i<etherPacket->getMacDestArraySize();i++)
@@ -126,7 +126,7 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 	if (packet->getLength() == ARP_TYPE)
 	{
 		// getting the src mac for later useage (dest mac is broadcast so it is irrelevent
-		char *srcMac = new char[6]; // TODO check deletion
+		unsigned char *srcMac = new unsigned char[6]; // TODO check deletion
 		for (int i=0; i<6;i++)
 		{
 			srcMac[i] = packet->getMacSrc(i);
@@ -177,10 +177,10 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 		}
 		else //got an arp reply message need to fill table with new info
 		{
-			char *destIp = new char[4]; //TODO delete this later
+			unsigned char *destIp = new unsigned char[4]; //TODO delete this later
 			for (int i=0; i<4; i++)
 			{
-				destIp[0]=arpPacket->getIp(i);
+				destIp[i]=arpPacket->getIp(i);
 			}
 			int index=searchEntry(destIp);
 			if (index == UNDEFINED)
@@ -242,7 +242,7 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
  * Description: function gets an IP packet and returns the mac
  * 				if mac is not on table - returns NULL
  */
-char *Eth::getMacFromTable(IP_pck* packet)
+unsigned char *Eth::getMacFromTable(IP_pck* packet)
 {
 	int index = UNDEFINED;
 	for (unsigned int j=0;j<iTable && index == UNDEFINED;j++)
@@ -250,6 +250,8 @@ char *Eth::getMacFromTable(IP_pck* packet)
 		bool isFound = true;
 		for (unsigned int i=0; i<packet->getDestIpArraySize() && isFound;i++)
 		{
+			int temp1 = table[j].destIp[i];
+			int temp2 = packet->getDestIp(i);
 			if (table[j].destIp[i]!=packet->getDestIp(i))
 				isFound = false;
 		}
@@ -258,7 +260,7 @@ char *Eth::getMacFromTable(IP_pck* packet)
 	}
 	if (index != UNDEFINED)
 	{
-		char* destMac = new char[6];
+		unsigned char* destMac = new unsigned char[6];
 		for (int i=0; i<6;i++)
 		{
 			destMac[i]=table[index].mac[i];
@@ -301,15 +303,16 @@ void Eth::copyArpEntry(arpTable* dst,arpTable* src)
 IP_pck *Eth::checkForMore()
 {
 	unsigned int i=0;
-	char* mac=NULL;
-	for (i =0;i<fifo.max_size() && mac==NULL;i++)
+	unsigned char* mac=NULL;
+	int size = fifo.size();
+	for (i =0;i<size && mac==NULL;i++)
 	{
 		mac=getMacFromTable((fifo[i]));
 	}
 	if (mac != NULL)
 	{
-		IP_pck *tempPacket= fifo[i];
-		fifo.erase(fifo.begin()+i);
+		IP_pck *tempPacket= fifo[i-1];
+		fifo.erase(fifo.begin()+i-1);
 		return tempPacket;
 	}
 	return NULL;
@@ -317,7 +320,7 @@ IP_pck *Eth::checkForMore()
 /*
  * Description: searching for an entry in the arp table. gets an IP returns the index in the table
  */
-int Eth::searchEntry(char* ip)
+int Eth::searchEntry(unsigned char* ip)
 {
 	int index = UNDEFINED;
 	bool isFound = true;

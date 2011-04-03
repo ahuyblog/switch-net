@@ -94,13 +94,13 @@ unsigned int Arp::getIpArraySize() const
     return 4;
 }
 
-char Arp::getIp(unsigned int k) const
+unsigned char Arp::getIp(unsigned int k) const
 {
     if (k>=4) throw cRuntimeError("Array of size 4 indexed by %lu", (unsigned long)k);
     return ip_var[k];
 }
 
-void Arp::setIp(unsigned int k, char ip_var)
+void Arp::setIp(unsigned int k, unsigned char ip_var)
 {
     if (k>=4) throw cRuntimeError("Array of size 4 indexed by %lu", (unsigned long)k);
     this->ip_var[k] = ip_var;
@@ -111,13 +111,13 @@ unsigned int Arp::getMacArraySize() const
     return 6;
 }
 
-char Arp::getMac(unsigned int k) const
+unsigned char Arp::getMac(unsigned int k) const
 {
     if (k>=6) throw cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
     return mac_var[k];
 }
 
-void Arp::setMac(unsigned int k, char mac_var)
+void Arp::setMac(unsigned int k, unsigned char mac_var)
 {
     if (k>=6) throw cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
     this->mac_var[k] = mac_var;
@@ -225,8 +225,8 @@ const char *ArpDescriptor::getFieldTypeString(void *object, int field) const
     }
     static const char *fieldTypeStrings[] = {
         "unsigned short",
-        "char",
-        "char",
+        "unsigned char",
+        "unsigned char",
     };
     return (field>=0 && field<3) ? fieldTypeStrings[field] : NULL;
 }
@@ -271,8 +271,8 @@ std::string ArpDescriptor::getFieldAsString(void *object, int field, int i) cons
     Arp *pp = (Arp *)object; (void)pp;
     switch (field) {
         case 0: return ulong2string(pp->getType());
-        case 1: return long2string(pp->getIp(i));
-        case 2: return long2string(pp->getMac(i));
+        case 1: return ulong2string(pp->getIp(i));
+        case 2: return ulong2string(pp->getMac(i));
         default: return "";
     }
 }
@@ -288,8 +288,8 @@ bool ArpDescriptor::setFieldAsString(void *object, int field, int i, const char 
     Arp *pp = (Arp *)object; (void)pp;
     switch (field) {
         case 0: pp->setType(string2ulong(value)); return true;
-        case 1: pp->setIp(i,string2long(value)); return true;
-        case 2: pp->setMac(i,string2long(value)); return true;
+        case 1: pp->setIp(i,string2ulong(value)); return true;
+        case 2: pp->setMac(i,string2ulong(value)); return true;
         default: return false;
     }
 }

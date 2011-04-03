@@ -34,7 +34,7 @@ void Ip::initialize()
 	ipId = par("ip4");
 	EV << "Initialize IP layer: "<< ipId <<"\n";
 	// init my ip
-    myIp = new char[4];
+    myIp = new unsigned char[4];
     myIp[0] = 172;
     myIp[1] = 168;
     myIp[2] = 32;

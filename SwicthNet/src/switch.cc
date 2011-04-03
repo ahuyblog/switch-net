@@ -36,39 +36,40 @@ void Switch::initialize()
 	latency = par("latencyTime");
 	int i;
 	for (i = 0; i < tblLength; i++)
-		resetRow(i);//reset table entry at row i
+		initRow(i);//reset table entry at row i
 
 	//Set timer delay for cheking Ageing time
-	EV << "Initial Ageing timer sets\n";
-	event = new cMessage("Ageing timer");
-	sendEvent = new cMessage("it's time to forward message");
-	scheduleAt(simTime()+agTime, event);
+//	EV << "Initial Ageing timer sets\n";
+//	event = new cMessage("event");
+//	sendEvent = new cMessage("sendEvent");
+//	scheduleAt(simTime()+agTime, event);
 }
 
 void Switch::handleMessage(cMessage *msg)
 {
-	if(msg==event)
+	if(msg->isSelfMessage() && !strcmp(msg->getName(),"event"))
 	{
-		int i;
-		for(i = 0; i < tblLength; i++)
-		{
-			dataBase[i].lastEvnt = simTime()-dataBase[i].lastEvnt;//TODO update last event field
-			if(dataBase[i].lastEvnt > agTime)
-			{
-				resetRow(i);//reset table entry at row i
-			}
-		}
+		int i=msg->getKind();
+		resetRow(i);//reset table entry at row
 	}
-	else if(msg == sendEvent)
+	else if(msg->isSelfMessage() && !strcmp(msg->getName(),"sendEvent"))
 	{
-		forward(msgQueue.front());//forwarding the Eth packet that arrived
+		msgStore temp = msgQueue.front();
+		forward(temp.msg);//forwarding the Eth packet that arrived
+		cancelAndDelete(temp.self);
+		//delete temp.msg;
 		msgQueue.erase(msgQueue.begin());
 	}
 	else
 	{
 		int arrivedPort = -1;
 		handledMsg = check_and_cast<Eth_pck *>(msg);
-		msgQueue.push_back(handledMsg);
+		msgStore temp2;
+		temp2.msg = handledMsg;
+		temp2.self = new cMessage("sendEvent");
+		temp2.self->setKind(msgQueue.size());
+		scheduleAt(simTime()+latency,temp2.self);
+		msgQueue.push_back(temp2);
 		cGate *temp = handledMsg->getArrivalGate();
 		if (temp != NULL)
 			arrivedPort = temp->getIndex();
@@ -77,14 +78,19 @@ void Switch::handleMessage(cMessage *msg)
 		if (dataBase[arrivedPort].gate == -1)
 		{
 			dataBase[arrivedPort].gate = arrivedPort;//new table entry:
-			dataBase[arrivedPort].lastEvnt = simTime();
 			copySrcMac(handledMsg, dataBase[arrivedPort].mac);// copy MAC src to the table at port that msg arrived
+			dataBase[arrivedPort].selfEvent = new cMessage("event");
+			dataBase[arrivedPort].selfEvent->setKind(arrivedPort);
+			scheduleAt(simTime()+agTime,dataBase[arrivedPort].selfEvent);
 		}
 		else//table entry present
 		{
-			dataBase[arrivedPort].lastEvnt = simTime()-dataBase[arrivedPort].lastEvnt;//TODO update last event field???need to check
+			cancelAndDelete(dataBase[arrivedPort].selfEvent);
+			dataBase[arrivedPort].selfEvent = new cMessage("event");
+			dataBase[arrivedPort].selfEvent->setKind(arrivedPort);
+			scheduleAt(simTime()+agTime,dataBase[arrivedPort].selfEvent);
 		}
-		scheduleAt(simTime()+latency, sendEvent);
+		//scheduleAt(simTime()+latency, sendEvent);
 
 	}
 }
@@ -100,17 +106,16 @@ void Switch::copySrcMac(Eth_pck *src, unsigned char *dest)
 
 void Switch::forward(Eth_pck *msgToForward)
 {
-	bool equal = true;
+	bool equal;
 	int i,j,outPort =-1;
-	for(i = 0; i < tblLength; i++)
+	for(i = 0; i < tblLength && outPort == -1; i++)
 	{
+		equal=true;
 		if(dataBase[i].gate != -1)
 		{
 			for(j = 0; j < 6 && equal; j++)
 			{
-				if(msgToForward->getMacDest(j)==dataBase[i].mac[j])
-					equal = true;
-				else
+				if(msgToForward->getMacDest(j)!=dataBase[i].mac[j])
 					equal = false;
 			}
 			if (equal)
@@ -133,7 +138,18 @@ void Switch::resetRow(int index)
 {
 	int j;
 	dataBase[index].gate = -1;
-	dataBase[index].lastEvnt =0;
+	if (dataBase[index].selfEvent != NULL)
+		delete dataBase[index].selfEvent;
+	for (j = 0; j < 6; j++)
+		dataBase[index].mac[j] = 0;
+
+}
+
+void Switch::initRow(int index)
+{
+	int j;
+	dataBase[index].gate = -1;
+	dataBase[index].selfEvent = NULL;
 	for (j = 0; j < 6; j++)
 		dataBase[index].mac[j] = 0;
 

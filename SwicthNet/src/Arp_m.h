@@ -20,8 +20,8 @@
  * <pre>
  * packet Arp {
  *    unsigned short type; 
- *    char ip[4];
- *    char mac[6];
+ *    unsigned char ip[4];
+ *    unsigned char mac[6];
  * }
  * </pre>
  */
@@ -29,8 +29,8 @@ class Arp : public ::cPacket
 {
   protected:
     unsigned short type_var;
-    char ip_var[4];
-    char mac_var[6];
+    unsigned char ip_var[4];
+    unsigned char mac_var[6];
 
     // protected and unimplemented operator==(), to prevent accidental usage
     bool operator==(const Arp&);
@@ -48,11 +48,11 @@ class Arp : public ::cPacket
     virtual unsigned short getType() const;
     virtual void setType(unsigned short type_var);
     virtual unsigned int getIpArraySize() const;
-    virtual char getIp(unsigned int k) const;
-    virtual void setIp(unsigned int k, char ip_var);
+    virtual unsigned char getIp(unsigned int k) const;
+    virtual void setIp(unsigned int k, unsigned char ip_var);
     virtual unsigned int getMacArraySize() const;
-    virtual char getMac(unsigned int k) const;
-    virtual void setMac(unsigned int k, char mac_var);
+    virtual unsigned char getMac(unsigned int k) const;
+    virtual void setMac(unsigned int k, unsigned char mac_var);
 };
 
 inline void doPacking(cCommBuffer *b, Arp& obj) {obj.parsimPack(b);}
