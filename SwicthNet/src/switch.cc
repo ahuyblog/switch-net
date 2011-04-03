@@ -23,13 +23,17 @@ Switch::Switch()
 	dataBase = NULL;
 }
 
+/*
+ * Description: Initialize the parameters of the switch
+ * 				Creating and zerorise the switch table
+ * 				Schedule self event time for ageing timer update
+ */
 void Switch::initialize()
 {
 	tblLength = par("tableLength");
 	dataBase = new FilterTable[tblLength];
 	agTime = par("ageingTime");
 	latency = par("latencyTime");
-	queue = 0;
 	int i;
 	for (i = 0; i < tblLength; i++)
 		resetRow(i);//reset table entry at row i
@@ -48,7 +52,7 @@ void Switch::handleMessage(cMessage *msg)
 		int i;
 		for(i = 0; i < tblLength; i++)
 		{
-			dataBase[i].lastEvnt += simTime();//update last event field
+			dataBase[i].lastEvnt = simTime()-dataBase[i].lastEvnt;//TODO update last event field
 			if(dataBase[i].lastEvnt > agTime)
 			{
 				resetRow(i);//reset table entry at row i
@@ -57,24 +61,29 @@ void Switch::handleMessage(cMessage *msg)
 	}
 	else if(msg == sendEvent)
 	{
-		forward(handledMsg[queue]);//forwarding the Eth packet that arrived
-		queue--;
+		forward(msgQueue.front());//forwarding the Eth packet that arrived
+		msgQueue.erase(msgQueue.begin());
 	}
 	else
 	{
-		handledMsg[queue] = check_and_cast<Eth_pck *>(msg);
-		int arrivedPort = handledMsg[queue]->getArrivalGateId();
+		int arrivedPort = -1;
+		handledMsg = check_and_cast<Eth_pck *>(msg);
+		msgQueue.push_back(handledMsg);
+		cGate *temp = handledMsg->getArrivalGate();
+		if (temp != NULL)
+			arrivedPort = temp->getIndex();
+		else
+			EV << "Null error in the switch\n";
 		if (dataBase[arrivedPort].gate == -1)
 		{
 			dataBase[arrivedPort].gate = arrivedPort;//new table entry:
-			dataBase[arrivedPort].lastEvnt = 0;
-			copySrcMac(handledMsg[queue], dataBase[arrivedPort].mac);// copy MAC src to the table at port that msg arrived
+			dataBase[arrivedPort].lastEvnt = simTime();
+			copySrcMac(handledMsg, dataBase[arrivedPort].mac);// copy MAC src to the table at port that msg arrived
 		}
 		else//table entry present
 		{
-			dataBase[arrivedPort].lastEvnt += simTime();//update last event field???need to check
+			dataBase[arrivedPort].lastEvnt = simTime()-dataBase[arrivedPort].lastEvnt;//TODO update last event field???need to check
 		}
-		queue++;
 		scheduleAt(simTime()+latency, sendEvent);
 
 	}

@@ -19,7 +19,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <omnetpp.h>
+#include <vector>
 #include "Eth_pck_m.h"
+using namespace std;
 
 typedef struct FilterTable{
 		int gate;
@@ -39,9 +41,9 @@ protected:
 	simtime_t agTime;//Ageing time for each table row
 	simtime_t latency;//Deley for forwording message
 	int tblLength;
-	Eth_pck *handledMsg[];
+	vector<Eth_pck*> msgQueue;
+	Eth_pck *handledMsg;
 	FilterTable *dataBase;
-	int queue;
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
     virtual void copySrcMac(Eth_pck *src, unsigned char *dest);
