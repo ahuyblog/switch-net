@@ -38,14 +38,14 @@ void Ip::initialize()
     myIp[0] = 172;
     myIp[1] = 168;
     myIp[2] = 32;
-    myIp[3] = getIndex();
+    myIp[3] = ipId;
     // init rand array for ip randomize
     int size = par("hostNum");
     size = size-1;
     randArr = new int[size];
     for (int i=0,j=0; j<size; i++)
     {
-    	if (i != getIndex())
+    	if (i !=ipId)
     	{
     		randArr[j]=i;
     		j++;
@@ -100,7 +100,7 @@ void Ip::processMsgFromHigherLayer(App_pck *packet)
 		ipPacket->setDestIp(i,myIp[i]);
 	}
 	int hostNum = par("hostNum");
-	ipPacket->setDestIp(i,randArr[intuniform(0,hostNum-1)]);
+	ipPacket->setDestIp(i,randArr[intuniform(0,hostNum-2)]);
 	const char *data = packet->getData();
 	int size= packet->getByteLength();
 	unsigned short checksum=0;

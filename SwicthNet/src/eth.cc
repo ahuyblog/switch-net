@@ -33,18 +33,19 @@ Define_Module(Eth);
 void Eth::initialize()
 {
 	iTable = 0;
+	int myId = par("id");
 	myMac = new char[6];
 	myMac[0] = 17; // 11 HEX
 	myMac[1] = 17;
 	myMac[2] = 17;
 	myMac[3] = 17;
 	myMac[4] = 17;
-	myMac[5] = par("id");
+	myMac[5] = myId;
 	myIp = new char[4];
 	myIp[0] =IP1;
 	myIp[1] =IP2;
 	myIp[2] =IP3;
-	myIp[3] = par("id");
+	myIp[3] = myId;
 	EV << "Initialize Eth layer: "<< myMac[5] <<"\n";
 	// init rand array for ip randomize
 	int size = par("hostNum");
@@ -52,7 +53,7 @@ void Eth::initialize()
 	randArr = new int[size];
 	for (int i=0,j=0; j<size; i++)
 	{
-		if (i != getIndex())
+		if (i !=myId)
 		{
 			randArr[j]=i;
 			j++;
@@ -64,7 +65,7 @@ void Eth::handleMessage(cMessage *msg)
 {
 	if (msg->isSelfMessage())
 		processSelfTimer(msg);
-	else if (msg->arrivedOn("downLayer$i"))
+	else if (msg->arrivedOn("downLayerIn"))
 	    processMsgFromLowerLayer(check_and_cast<Eth_pck *>(msg));
 	else
 	    processMsgFromHigherLayer(check_and_cast<IP_pck *>(msg));
@@ -132,23 +133,22 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 		}
 
 		Arp* arpPacket = check_and_cast<Arp *>(packet->decapsulate());
-
-
 		if (ARP_REQUEST == arpPacket->getType()) // arp request
 		{
 			bool isMine = true;
 			unsigned int i=0;
-			for (i=0;i<arpPacket->getMacArraySize() && isMine;i++)
+			for (i=0;i<arpPacket->getIpArraySize() && isMine;i++)
 			{
 				if (arpPacket->getIp(i)!=myIp[i])
 					isMine = false;
 			}
-			if (isMine) // need to send arp reply
+			EV<<"test test"<<endl;
+			if (isMine==true) // need to send arp reply
 			{
 				Arp* arpReply = new Arp("Arp message");
 				Eth_pck * etherPacket = new Eth_pck("ether");
-				arpPacket->setType(ARP_REPLY);
-				for (i=0; i<arpPacket->getIpArraySize();i++)
+				arpReply->setType(ARP_REPLY);
+				for (i=0; i<arpReply->getIpArraySize();i++)
 				{
 					arpReply->setIp(i,arpPacket->getIp(i));
 				}
@@ -156,7 +156,7 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 				{
 					arpReply->setMac(i,myMac[i]);
 				}
-				arpPacket->setByteLength(ARP_REPLY_LENGTH);
+				arpReply->setByteLength(ARP_REPLY_LENGTH);
 				etherPacket->setLength(ARP_TYPE);
 				etherPacket->setByteLength(ETH_LENGTH);
 				for (i=0; i<etherPacket->getMacDestArraySize();i++)
