@@ -48,7 +48,7 @@ class Eth : public cSimpleModule
     virtual IP_pck *checkForMore();
     virtual int searchEntry(char* ip);
     int *randArr;
+    void copyArpEntry(arpTable* dst,arpTable* src);
     vector<IP_pck*> fifo; // will hold all messeges that need to be sent
 };
-
 #endif

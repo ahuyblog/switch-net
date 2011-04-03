@@ -272,7 +272,28 @@ char *Eth::getMacFromTable(IP_pck* packet)
  */
 void Eth::processSelfTimer(cMessage *msg)
 {
-
+	int index = msg->getKind();
+	cancelAndDelete(table[index].timer);
+	for (unsigned int i=index;i<iTable-1;i++)
+	{
+		copyArpEntry(&table[i],&table[i+1]);
+	}
+	iTable--;
+}
+/*
+ * Descripition: copies an entry of arpTable
+ */
+void Eth::copyArpEntry(arpTable* dst,arpTable* src)
+{
+	for (int i=0;i<4;i++)
+	{
+		dst->destIp[i]=src->destIp[i];
+	}
+	for (int i=0;i<6;i++)
+	{
+		dst->mac[i]=src->mac[i];
+	}
+	dst->timer=src->timer;
 }
 /*
  * Description: checking fifo for packets that exists on the arp table returning NULL if none were found
