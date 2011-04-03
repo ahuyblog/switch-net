@@ -21,15 +21,16 @@ Define_Module(Eth);
 void Eth::initialize()
 {
 	 myMac = new char[6];
-	 myMac[0] = 11;
-	 myMac[1] = 11;
-	 myMac[2] = 11;
-	 myMac[3] = 11;
-	 myMac[4] = 11;
+	 myMac[0] = 17; // 11 HEX
+	 myMac[1] = 17;
+	 myMac[2] = 17;
+	 myMac[3] = 17;
+	 myMac[4] = 17;
 	 myMac[5] = par("mac6");
 	 EV << "Initialize Eth layer: "<< myMac[5] <<"\n";
 	 // init rand array for ip randomize
-	 int size = getVectorSize()-1;
+	 int size = par("hostNum");
+	 size = size -1;
 	 randArr = new int[size];
 	 for (int i=0,j=0; j<size; i++)
 	 {
