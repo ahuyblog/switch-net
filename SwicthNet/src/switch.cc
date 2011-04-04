@@ -52,6 +52,7 @@ void Switch::handleMessage(cMessage *msg)
 		int i=msg->getKind();
 		EV<< "****SWITCH TABLE ENTRY DELITED at port: "<< i <<endl;
 		resetRow(i);//reset table entry at row
+		//cancelAndDelete(msg);
 	}
 	else if(msg->isSelfMessage() && !strcmp(msg->getName(),"sendEvent"))
 	{
@@ -135,6 +136,7 @@ void Switch::forward(Eth_pck *msgToForward)
 			if(i != arrPort)
 				send(msgToForward->dup(), "out",i);//send to port
 		}
+		delete msgToForward;
 	}//broadcast the message
 }
 

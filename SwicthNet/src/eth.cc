@@ -133,6 +133,7 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 		}
 
 		Arp* arpPacket = check_and_cast<Arp *>(packet->decapsulate());
+		delete packet;
 		if (ARP_REQUEST == arpPacket->getType()) // arp request
 		{
 			bool isMine = true;
@@ -169,10 +170,6 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 				}
 				etherPacket->encapsulate(arpReply);
 				send(etherPacket,"downLayerOut");
-			}
-			else // TODO wtf should i do here which message should i delete the arp one or the eth?
-			{
-				delete packet;
 			}
 		}
 		else //got an arp reply message need to fill table with new info
@@ -218,6 +215,7 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 			}
 		}
 		delete srcMac;
+		delete arpPacket;
 	}
 	else // regular message need to pass to higher layer and update arp table
 	{
@@ -231,6 +229,7 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 		{
 			IP_pck *ipPacket = check_and_cast<IP_pck*>(packet->decapsulate());
 			send(ipPacket,"upLayer$o");
+			delete packet;
 		}
 		else // message is not mine
 		{

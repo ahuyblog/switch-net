@@ -73,6 +73,7 @@ void Ip::processMsgFromLowerLayer(IP_pck *packet)
 	{
 		App_pck *appPacket = check_and_cast<App_pck *>(packet->decapsulate());
 		send(appPacket,"upLayer$o");
+		delete packet;
 	}
 	else
 	{
