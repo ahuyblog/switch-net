@@ -33,7 +33,6 @@ void Switch::initialize()
 	tblLength = par("tableLength");
 	dataBase = new FilterTable[tblLength];
 	agTime = par("ageingTime");
-	latency = par("latencyTime");
 	int i;
 	for (i = 0; i < tblLength; i++)
 		initRow(i);//reset table entry at row i
@@ -70,6 +69,8 @@ void Switch::handleMessage(cMessage *msg)
 		temp2.msg = handledMsg;
 		temp2.self = new cMessage("sendEvent");
 		temp2.self->setKind(msgQueue.size());
+		latency = par("latencyTime");
+		latency = (handledMsg->getByteLength()*latency)/1000;
 		scheduleAt(simTime()+latency,temp2.self);
 		msgQueue.push_back(temp2);
 		cGate *temp = handledMsg->getArrivalGate();
