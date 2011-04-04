@@ -337,3 +337,26 @@ int Eth::searchEntry(unsigned char* ip)
 	}
 	return index;
 }
+/*
+ * Description: sending a message - also checks if channel is busy, in case it is busy
+ * 				will put the message in a queue and initiate a self event "busy" will grab it in the future
+ * 				and send the msg in the queue later.
+ */
+void Eth::sendMessage(Eth_pck* etherPacket,const char * gateName)
+{
+	cGate* outGate= gate(gateName)->getNextGate();
+	cChannel* channel = outGate->getTransmissionChannel();
+	//simtime_t txFinishTime =channel->getTransmissionFinishTime();
+	if (!channel->isBusy())
+	{
+		send(etherPacket,gateName);
+	}
+	else
+	{
+		msgStore temp;
+		temp.msg = etherPacket;
+		temp.self = new cMessage("busy");
+		scheduleAt(channel->getTransmissionFinishTime(),temp.self);
+		msgQueue.push_back(temp);
+	}
+}

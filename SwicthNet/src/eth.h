@@ -30,7 +30,10 @@ typedef struct arpTable
 	unsigned char mac[6];
 	cMessage * timer;
 }arpTable;
-
+typedef struct msgStore{
+	Eth_pck* msg;
+	cMessage* self;
+}msgStore;
 class Eth : public cSimpleModule
 {
   protected:
@@ -48,7 +51,9 @@ class Eth : public cSimpleModule
     virtual IP_pck *checkForMore();
     virtual int searchEntry(unsigned char* ip);
     int *randArr;
+    vector<msgStore> msgQueue;
     void copyArpEntry(arpTable* dst,arpTable* src);
+    void sendMessage(Eth_pck* etherPacket,const char * gateName);
     vector<IP_pck*> fifo; // will hold all messeges that need to be sent
 };
 #endif
