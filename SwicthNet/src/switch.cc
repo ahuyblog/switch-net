@@ -61,6 +61,12 @@ void Switch::handleMessage(cMessage *msg)
 		//delete temp.msg;
 		msgQueue.erase(msgQueue.begin());
 	}
+	else if (msg->isSelfMessage() && !strcmp(msg->getName(),"busy"))
+	{
+		msgStore temp=busyQueue.front();
+		cancelAndDelete(temp.self);
+		sendMessage(temp.msg,"out",temp.msg->getKind());//forwarding the Eth packet that arrived and channel is busy
+	}
 	else
 	{
 		int arrivedPort = -1;
@@ -126,7 +132,7 @@ void Switch::forward(Eth_pck *msgToForward)
 		}
 	}
 	if (outPort > -1)
-		send(msgToForward, "out",outPort);//send to port
+		sendMessage(msgToForward, "out",outPort);//send to port
 	else
 	{
 		for (i = 0; i < tblLength;i++)
@@ -135,7 +141,7 @@ void Switch::forward(Eth_pck *msgToForward)
 			if (temp != NULL)
 				arrPort = temp->getIndex();
 			if(i != arrPort)
-				send(msgToForward->dup(), "out",i);//send to port
+				sendMessage(msgToForward->dup(), "out",i);//send to port
 		}
 		delete msgToForward;
 	}//broadcast the message
@@ -179,6 +185,7 @@ void Switch::sendMessage(Eth_pck* etherPacket,const char * gateName,int port)
 	{
 		msgStore temp;
 		temp.msg = etherPacket;
+		etherPacket->setKind(port);
 		temp.self = new cMessage("busy");
 		scheduleAt(channel->getTransmissionFinishTime(),temp.self);
 		busyQueue.push_back(temp);

@@ -283,7 +283,7 @@ void Eth::processSelfTimer(cMessage *msg)
 	else
 	{
 		msgStore temp=msgQueue.front();
-		cancelAndDelete(temp.self);
+		cancelAndDelete(msg);
 		sendMessage(temp.msg,"downLayerOut");
 	}
 }
