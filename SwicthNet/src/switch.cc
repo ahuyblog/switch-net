@@ -50,6 +50,7 @@ void Switch::handleMessage(cMessage *msg)
 	if(msg->isSelfMessage() && !strcmp(msg->getName(),"event"))
 	{
 		int i=msg->getKind();
+		EV<< "****SWITCH TABLE ENTRY DELITED at port: "<< i <<endl;
 		resetRow(i);//reset table entry at row
 	}
 	else if(msg->isSelfMessage() && !strcmp(msg->getName(),"sendEvent"))
@@ -107,7 +108,7 @@ void Switch::copySrcMac(Eth_pck *src, unsigned char *dest)
 void Switch::forward(Eth_pck *msgToForward)
 {
 	bool equal;
-	int i,j,outPort =-1;
+	int i,j,outPort =-1,arrPort;
 	for(i = 0; i < tblLength && outPort == -1; i++)
 	{
 		equal=true;
@@ -128,7 +129,10 @@ void Switch::forward(Eth_pck *msgToForward)
 	{
 		for (i = 0; i < tblLength;i++)
 		{
-			if(i != msgToForward->getArrivalGateId())
+			cGate *temp = msgToForward->getArrivalGate();
+			if (temp != NULL)
+				arrPort = temp->getIndex();
+			if(i != arrPort)
 				send(msgToForward->dup(), "out",i);//send to port
 		}
 	}//broadcast the message
