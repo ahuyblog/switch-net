@@ -117,7 +117,7 @@ void Eth::processMsgFromHigherLayer(IP_pck *packet)
 			etherPacket->setMacDest(i,BROADCAST);
 		}
 		etherPacket->encapsulate(arpPacket);
-		send(etherPacket,"downLayerOut");
+		sendMessage(etherPacket,"downLayerOut");
 		fifo.push_back(packet);
 	}
 }
@@ -143,7 +143,6 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 				if (arpPacket->getIp(i)!=myIp[i])
 					isMine = false;
 			}
-			EV<<"test test"<<endl;
 			if (isMine==true) // need to send arp reply
 			{
 				Arp* arpReply = new Arp("Arp message");
@@ -169,7 +168,7 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 					etherPacket->setMacSrc(i,myMac[i]);
 				}
 				etherPacket->encapsulate(arpReply);
-				send(etherPacket,"downLayerOut");
+				sendMessage(etherPacket,"downLayerOut");
 			}
 		}
 		else //got an arp reply message need to fill table with new info

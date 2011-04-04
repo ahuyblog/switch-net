@@ -56,7 +56,12 @@ void App::handleMessage(cMessage *msg)
 App_pck *App::generateMsg()
 {
 	// Generate a random data in application layer with a different length .
-	int dataLgth = par("dataLength");
+	int dataLgth = 0;
+	while (dataLgth < 26 || dataLgth > 1480)
+	{
+		dataLgth = par("dataLength");
+		dataLgth = dataLgth - (dataLgth%4);
+	}
 	App_pck *data = new App_pck("Application data");
 	data->setByteLength(dataLgth);
 

@@ -100,8 +100,8 @@ void Ip::processMsgFromHigherLayer(App_pck *packet)
 	{
 		ipPacket->setDestIp(i,myIp[i]);
 	}
-	int hostNum = par("hostNum");
-	ipPacket->setDestIp(i,randArr[intuniform(0,hostNum-2)]);
+	int rand = par("randIp");
+	ipPacket->setDestIp(i,randArr[rand]);
 	const char *data = packet->getData();
 	int size= packet->getByteLength();
 	unsigned short checksum=0;
