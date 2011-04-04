@@ -1,4 +1,5 @@
 # Partial Tkenv config file -- see $HOME/.tkenvrc as well
 inspector "LanNet.host[2]" "Host" "2" "607x346+6+457:iconic"
 inspector "LanNet.host[3]" "Host" "2" "607x346+634+459:normal"
+inspector "LanNet" "LanNet" "2" "607x346+12+121:normal"
 

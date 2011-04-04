@@ -94,7 +94,7 @@ void Eth::processMsgFromHigherLayer(IP_pck *packet)
 		}
 		etherPacket->setLength(packet->getByteLength());
 		etherPacket->encapsulate(packet);
-		send(etherPacket,"downLayerOut");
+		sendMessage(etherPacket,"downLayerOut");
 		// checking if there are more packets that can be sent (those that are on the arp table)
 		IP_pck* ipPacket = checkForMore();
 		if (ipPacket != NULL)
