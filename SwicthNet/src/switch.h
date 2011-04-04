@@ -31,7 +31,7 @@ typedef struct FilterTable{
 typedef struct msgStore{
 	Eth_pck* msg;
 	cMessage* self;
-};
+}msgStore;
 class Switch : public cSimpleModule
 {
 
@@ -43,6 +43,7 @@ protected:
 	simtime_t latency;//Deley for forwording message
 	int tblLength;
 	vector<msgStore> msgQueue;
+	vector<msgStore> busyQueue;
 	Eth_pck *handledMsg;
 	FilterTable *dataBase;
     virtual void initialize();
@@ -51,6 +52,7 @@ protected:
     void forward(Eth_pck *msgToForward);
     void resetRow(int index);
     void initRow(int index);
+    void sendMessage(Eth_pck* etherPacket,const char * gateName,int port);
 };
 
 #endif

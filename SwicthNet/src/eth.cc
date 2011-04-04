@@ -248,8 +248,6 @@ unsigned char *Eth::getMacFromTable(IP_pck* packet)
 		bool isFound = true;
 		for (unsigned int i=0; i<packet->getDestIpArraySize() && isFound;i++)
 		{
-			int temp1 = table[j].destIp[i];
-			int temp2 = packet->getDestIp(i);
 			if (table[j].destIp[i]!=packet->getDestIp(i))
 				isFound = false;
 		}
@@ -272,13 +270,22 @@ unsigned char *Eth::getMacFromTable(IP_pck* packet)
  */
 void Eth::processSelfTimer(cMessage *msg)
 {
-	int index = msg->getKind();
-	cancelAndDelete(table[index].timer);
-	for (unsigned int i=index;i<iTable-1;i++)
+	if (!strcmp(msg->getName(),"del"))
 	{
-		copyArpEntry(&table[i],&table[i+1]);
+		int index = msg->getKind();
+		cancelAndDelete(table[index].timer);
+		for (unsigned int i=index;i<iTable-1;i++)
+		{
+			copyArpEntry(&table[i],&table[i+1]);
+		}
+		iTable--;
 	}
-	iTable--;
+	else
+	{
+		msgStore temp=msgQueue.front();
+		cancelAndDelete(temp.self);
+		sendMessage(temp.msg,"downLayerOut");
+	}
 }
 /*
  * Descripition: copies an entry of arpTable
@@ -302,7 +309,7 @@ IP_pck *Eth::checkForMore()
 {
 	unsigned int i=0;
 	unsigned char* mac=NULL;
-	int size = fifo.size();
+	unsigned int size = fifo.size();
 	for (i =0;i<size && mac==NULL;i++)
 	{
 		mac=getMacFromTable((fifo[i]));

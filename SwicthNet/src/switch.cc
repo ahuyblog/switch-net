@@ -161,3 +161,26 @@ void Switch::initRow(int index)
 		dataBase[index].mac[j] = 0;
 
 }
+
+/*
+ * Description: sending a message - also checks if channel is busy, in case it is busy
+ * 				will put the message in a queue and initiate a self event "busy" will grab it in the future
+ * 				and send the msg in the queue later.
+ */
+void Switch::sendMessage(Eth_pck* etherPacket,const char * gateName,int port)
+{
+	cGate* outGate= gate(gateName, port);
+	cChannel* channel = outGate->getTransmissionChannel();
+	if (!channel->isBusy())
+	{
+		send(etherPacket,gateName,port);
+	}
+	else
+	{
+		msgStore temp;
+		temp.msg = etherPacket;
+		temp.self = new cMessage("busy");
+		scheduleAt(channel->getTransmissionFinishTime(),temp.self);
+		busyQueue.push_back(temp);
+	}
+}
