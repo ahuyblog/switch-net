@@ -64,6 +64,7 @@ void Switch::handleMessage(cMessage *msg)
 	else if (msg->isSelfMessage() && !strcmp(msg->getName(),"busy"))
 	{
 		msgStore temp=busyQueue.front();
+		busyQueue.erase(busyQueue.begin());
 		cancelAndDelete(temp.self);
 		sendMessage(temp.msg,"out",temp.msg->getKind());//forwarding the Eth packet that arrived and channel is busy
 	}
