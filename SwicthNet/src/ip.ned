@@ -25,7 +25,7 @@ simple Ip
         int ip4;
         int limit = default(1);
         int hostNum = default(4);
-        int randIp;
+        volatile int randIp;
         @display("i=block/layer");
     gates:
         inout upLayer;

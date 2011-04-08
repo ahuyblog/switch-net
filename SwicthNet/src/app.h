@@ -36,6 +36,10 @@ protected:
     simtime_t delay;  // timeout
     cMessage *timeoutMsg;  // holds pointer to the timeout self-message
     App_pck *message;  // message that has to be re-sent on timeout
+
+    //statistic variables and graphs
+    simtime_t lastMsgTime;
+    cOutVector arrivelTimes;
 };
 
 #endif

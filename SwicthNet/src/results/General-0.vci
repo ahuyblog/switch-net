@@ -1,0 +1,26 @@
+file 70247 1302248318                                           
+version 2
+run General-0-20110408-10:36:49-2560
+attr configname General
+attr datetime 20110408-10:36:49
+attr experiment General
+attr inifile /home/surkesd/omnet_worksp/SwicthNet/src/omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network LanNet
+attr processid 2560
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 2  LanNet.host[2].app  "Arrival Time"  ETV
+vector 0  LanNet.host[0].app  "Arrival Time"  ETV
+vector 3  LanNet.host[3].app  "Arrival Time"  ETV
+vector 1  LanNet.host[1].app  "Arrival Time"  ETV
+0	603 17379 32 15338 0.269722966543 143.216759002598 454 0.000846717258 2.093992654405 143.2167590026 92.727832614547
+1	17982 16766 192 15322 1.279326409155 143.17285458521 438 0.000555055232 2.163650885219 143.17285458521 94.573895670814
+2	34748 17532 16 15306 0.238958277367 143.022993390446 457 0.000245157368 1.884773410918 143.02299339045 89.571720940211
+3	52280 17967 64 15330 0.394455346139 143.181636114472 469 7.7772633e-05 1.804349147864 143.18163611447 85.336327101017

@@ -14,7 +14,7 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 #USERIF_LIBS = $(TKENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I.
+INCLUDE_PATH = -I. -Iresults
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -105,12 +105,13 @@ clean:
 	-rm -rf $O
 	-rm -f SwicthNet SwicthNet.exe libSwicthNet.so libSwicthNet.a libSwicthNet.dll libSwicthNet.dylib
 	-rm -f ./*_m.cc ./*_m.h
+	-rm -f results/*_m.cc results/*_m.h
 
 cleanall: clean
 	-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
-	$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc
+	$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc results/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/switch.o: switch.cc \
@@ -124,6 +125,7 @@ $O/ip.o: ip.cc \
 $O/eth.o: eth.cc \
 	eth.h \
 	IP_pck_m.h \
+	Arp_m.h \
 	Eth_pck_m.h
 $O/Arp_m.o: Arp_m.cc \
 	Arp_m.h

@@ -29,6 +29,9 @@ void App::initialize()
 	EV << "Initial delay timer sets\n";
 	timeoutMsg = new cMessage("Data packet generated");
 	scheduleAt(simTime()+delay, timeoutMsg);
+
+	lastMsgTime = simTime();
+	arrivelTimes.setName("Arrival Time");
 }
 
 void App::handleMessage(cMessage *msg)
@@ -49,6 +52,10 @@ void App::handleMessage(cMessage *msg)
 		// Data packet received!
 		EV << "Received from downLayer: " << handledMsg->getData() << "\n";//TODO change that we want to print
 		delete msg;
+
+		//statistic calculation
+		arrivelTimes.record(simTime()-lastMsgTime);
+		lastMsgTime = simTime();
 
 	}
 }
