@@ -58,8 +58,8 @@ void App::handleMessage(cMessage *msg)
 
 		//collect time of life of each message arrived to the module
 		simtime_t eed = simTime() - msg->getCreationTime();
-		timeOfLife.collect(eed);
-		betweenTimes.record(eed);
+		timeOfLife.collect(eed.dbl());
+		betweenTimes.record(eed.dbl());
 
 		delete msg;
 
