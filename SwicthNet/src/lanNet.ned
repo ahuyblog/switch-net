@@ -25,7 +25,9 @@ network LanNet
             //ber = 1e-10;
         }
     submodules:
-        host[4]: Host;
+        host[4]: Host {
+            @display("i=device/pc");
+        }
         switch: Switch {
             @display("i=,gold");
         }

@@ -32,6 +32,7 @@ protected:
 	virtual void initialize();
     virtual void handleMessage(cMessage *msg);
     virtual App_pck *generateMsg();
+    void finish();
   private:
     simtime_t delay;  // timeout
     cMessage *timeoutMsg;  // holds pointer to the timeout self-message
@@ -40,6 +41,11 @@ protected:
     //statistic variables and graphs
     simtime_t lastMsgTime;
     cOutVector arrivelTimes;
+    cOutVector betweenTimes;
+
+    cStdDev timeOfLife;
+    cStdDev difTime;
+
 };
 
 #endif

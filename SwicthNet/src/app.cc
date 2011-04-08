@@ -32,6 +32,10 @@ void App::initialize()
 
 	lastMsgTime = simTime();
 	arrivelTimes.setName("Arrival Time");
+	betweenTimes.setName("Bettwen arrivals Time");
+
+	timeOfLife.setName("Time of life for massege");
+	difTime.setName("Diferance time");
 }
 
 void App::handleMessage(cMessage *msg)
@@ -51,11 +55,20 @@ void App::handleMessage(cMessage *msg)
 		App_pck *handledMsg = check_and_cast<App_pck *>(msg);
 		// Data packet received!
 		EV << "Received from downLayer: " << handledMsg->getData() << "\n";//TODO change that we want to print
+
+		//collect time of life of each message arrived to the module
+		simtime_t eed = simTime() - msg->getCreationTime();
+		timeOfLife.collect(eed);
+		betweenTimes.record(eed);
+
 		delete msg;
 
 		//statistic calculation
-		arrivelTimes.record(simTime()-lastMsgTime);
+		simtime_t stat = simTime()-lastMsgTime;
+		arrivelTimes.record(stat);
 		lastMsgTime = simTime();
+
+		difTime.collect(stat);
 
 	}
 }
@@ -72,11 +85,22 @@ App_pck *App::generateMsg()
 	App_pck *data = new App_pck("Application data");
 	data->setByteLength(dataLgth);
 
-//	char msgdata[dataLgth];
-//	for (i = 0; i < dataLgth; i++)
-//		msgdata[i]=uniform(50,125);//random data generation
-//    App_pck *msg = new App_pck();
-//    msg->setData(msgdata);
     return data;
+}
+
+void App::finish()
+{
+	// This function is called by OMNeT++ at the end of the simulation.
+	EV << "Final statistic " << endl;
+	EV << "Time of life mean: " << timeOfLife.getMean() << endl;
+	EV << "Time of life Max: " << timeOfLife.getMax() << endl;
+	EV << "Time of life Min: " << timeOfLife.getMin() << endl;
+	EV << "Time of life StdDev: " << timeOfLife.getStddev() << endl;
+	EV << "--------------------" << endl;
+	EV << "Time between arrivals mean: " << difTime.getMean() << endl;
+	EV << "Time between arrivals Max: " << difTime.getMax() << endl;
+	EV << "Time between arrivals Min: " << difTime.getMin() << endl;
+	EV << "Time between arrivals StdDev: " << difTime.getStddev() << endl;
+	EV << "********************" << endl;
 }
 
