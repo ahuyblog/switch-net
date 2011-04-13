@@ -43,7 +43,7 @@ protected:
 	simtime_t latency;//Deley for forwording message
 	int tblLength;
 	vector<msgStore> msgQueue;
-	vector<msgStore> busyQueue;
+	vector<msgStore> busyQueue; // queue for when the channel is busy
 	Eth_pck *handledMsg;
 	FilterTable *dataBase;
     virtual void initialize();

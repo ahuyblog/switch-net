@@ -42,16 +42,16 @@ class Eth : public cSimpleModule
     virtual void processMsgFromHigherLayer(IP_pck *packet);
     virtual void processMsgFromLowerLayer(Eth_pck *packet);
     virtual void processSelfTimer(cMessage *msg);
-    unsigned char *myMac;
-    unsigned char *myIp;
-    arpTable table[10];
-    unsigned int iTable;
-  private:
+    unsigned char *myMac; // will hold my mac aderess
+    unsigned char *myIp; // will hold my ip adress
+    arpTable table[10]; // this is the arp Table
+    unsigned int iTable; // index for arp table points to empty slot on array
+  private: // description on what those functions do on c file
     virtual unsigned char *getMacFromTable(IP_pck* packet);
     virtual IP_pck *checkForMore();
     virtual int searchEntry(unsigned char* ip);
-    int *randArr;
-    vector<msgStore> msgQueue;
+    int *randArr; // used for randoming
+    vector<msgStore> msgQueue; // messages are stored here if channel is busy
     void copyArpEntry(arpTable* dst,arpTable* src);
     void sendMessage(Eth_pck* etherPacket,const char * gateName);
     vector<IP_pck*> fifo; // will hold all messeges that need to be sent

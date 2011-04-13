@@ -1,17 +1,4 @@
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+
 
 #include "switch.h"
 
@@ -37,30 +24,28 @@ void Switch::initialize()
 	for (i = 0; i < tblLength; i++)
 		initRow(i);//reset table entry at row i
 
-	//Set timer delay for cheking Ageing time
-//	EV << "Initial Ageing timer sets\n";
-//	event = new cMessage("event");
-//	sendEvent = new cMessage("sendEvent");
-//	scheduleAt(simTime()+agTime, event);
 }
-
+/*
+ *
+ */
 void Switch::handleMessage(cMessage *msg)
 {
+	// if the self message was a delete event on table
 	if(msg->isSelfMessage() && !strcmp(msg->getName(),"event"))
 	{
 		int i=msg->getKind();
 		EV<< "****SWITCH TABLE ENTRY DELITED at port: "<< i <<endl;
 		resetRow(i);//reset table entry at row
 		//cancelAndDelete(msg);
-	}
+	}// this event came after latency time is finished.
 	else if(msg->isSelfMessage() && !strcmp(msg->getName(),"sendEvent"))
 	{
 		msgStore temp = msgQueue.front();
 		forward(temp.msg);//forwarding the Eth packet that arrived
 		cancelAndDelete(temp.self);
-		//delete temp.msg;
 		msgQueue.erase(msgQueue.begin());
 	}
+	// this event came due the channel being busy
 	else if (msg->isSelfMessage() && !strcmp(msg->getName(),"busy"))
 	{
 		msgStore temp=busyQueue.front();
@@ -68,7 +53,7 @@ void Switch::handleMessage(cMessage *msg)
 		cancelAndDelete(temp.self);
 		sendMessage(temp.msg,"out",temp.msg->getKind());//forwarding the Eth packet that arrived and channel is busy
 	}
-	else
+	else // in this case a regular message came from one of the gates
 	{
 		int arrivedPort = -1;
 		handledMsg = check_and_cast<Eth_pck *>(msg);
@@ -100,11 +85,12 @@ void Switch::handleMessage(cMessage *msg)
 			dataBase[arrivedPort].selfEvent->setKind(arrivedPort);
 			scheduleAt(simTime()+agTime,dataBase[arrivedPort].selfEvent);
 		}
-		//scheduleAt(simTime()+latency, sendEvent);
 
 	}
 }
-
+/*
+ * Description: copy src mac to destination
+ */
 void Switch::copySrcMac(Eth_pck *src, unsigned char *dest)
 {
 	int i;
@@ -113,7 +99,9 @@ void Switch::copySrcMac(Eth_pck *src, unsigned char *dest)
 		dest[i]=src->getMacSrc(i);
 	}
 }
-
+/*
+ * this message forwards the message. launched after a sendEvent self message
+ */
 void Switch::forward(Eth_pck *msgToForward)
 {
 	bool equal;

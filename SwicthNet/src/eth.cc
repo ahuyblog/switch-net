@@ -34,6 +34,9 @@ void Eth::initialize()
 {
 	iTable = 0;
 	int myId = par("id");
+	/*
+	 * initializing my mac adress by using the id on the parmeters on ini file
+	 */
 	myMac = new unsigned char[6];
 	myMac[0] = 17; // 11 HEX
 	myMac[1] = 17;
@@ -47,7 +50,8 @@ void Eth::initialize()
 	myIp[2] =IP3;
 	myIp[3] = myId;
 	EV << "Initialize Eth layer: "<< myMac[5] <<"\n";
-	// init rand array for ip randomize
+	// init rand array for ip randomize, array will hold all adresses of all host but myself
+	// on later stages will random one of the cells.
 	int size = par("hostNum");
 	size = size -1;
 	randArr = new int[size];
@@ -60,40 +64,44 @@ void Eth::initialize()
 		}
 	}
 }
-
+/*
+ * Description: when getting a message this function checks from where and calls the correct function
+ */
 void Eth::handleMessage(cMessage *msg)
 {
 	if (msg->isSelfMessage())
 		processSelfTimer(msg);
-	else if (msg->arrivedOn("downLayerIn"))
+	else if (msg->arrivedOn("downLayerIn")) // message arrived from switch
 	    processMsgFromLowerLayer(check_and_cast<Eth_pck *>(msg));
-	else
+	else // message arrived from ip layer
 	    processMsgFromHigherLayer(check_and_cast<IP_pck *>(msg));
 }
+/*
+ * Description: this function handles a packet that was recievd from the ip layer
+ * 				thus it recievs an IP_pck as a paramter. the function checks if the dest mac is on the arp table
+ * 				if dest mac is not there - and arp request is sent and recievd packet enters a queue-
+ * 				later on this packet will be sent.
+ */
 void Eth::processMsgFromHigherLayer(IP_pck *packet)
 {
+	//**** creating the eth packet to send
 	Eth_pck *etherPacket = new Eth_pck("ether");
 	unsigned int i=0;
-	/* no preamble according to 14B size stated in exercise
-	for (i=0; i<etherPacket->getPreambleArraySize()-1; i++)
-	{
-		etherPacket->setPreamble(i,PREAMBLE_START);
-	}
-	etherPacket->setPreamble(i,PREAMBLE_END);*/
 	for (i=0; i<etherPacket->getMacSrcArraySize();i++)
 	{
 		etherPacket->setMacSrc(i,myMac[i]);
 	}
 	etherPacket->setByteLength(14);
-	unsigned char *destMac = getMacFromTable(packet);
-	if (destMac != NULL)
-	{
+	unsigned char *destMac = getMacFromTable(packet); // getting mac dest from the table - will be NULL if not found
+	if (destMac != NULL) // found on table
+	{ // finishing making packet using the dest mac
 		for (i=0; i<etherPacket->getMacDestArraySize();i++)
 		{
 			etherPacket->setMacDest(i,destMac[i]);
 		}
 		etherPacket->setLength(packet->getByteLength());
 		etherPacket->encapsulate(packet);
+		//** sending the message by using sendMessage function to prevent sending a message when line is busy.
 		sendMessage(etherPacket,"downLayerOut");
 		// checking if there are more packets that can be sent (those that are on the arp table)
 		IP_pck* ipPacket = checkForMore();
@@ -102,8 +110,9 @@ void Eth::processMsgFromHigherLayer(IP_pck *packet)
 			processMsgFromHigherLayer(ipPacket);
 		}
 	}
-	else // need to send arp request
+	else //not found on table need to send arp request
 	{
+		//*** creating arp packet request - then encapsulating it with eth packet
 		Arp* arpPacket = new Arp("Arp message");
 		arpPacket->setType(ARP_REQUEST);
 		for (i=0; i<arpPacket->getIpArraySize();i++)
@@ -118,11 +127,17 @@ void Eth::processMsgFromHigherLayer(IP_pck *packet)
 		}
 		etherPacket->encapsulate(arpPacket);
 		sendMessage(etherPacket,"downLayerOut");
+		// putting the message from the higher layer on the queue to send it later.
 		fifo.push_back(packet);
 	}
 }
+/*
+ * Description: handles a message from lower layer. if its an arp reply fills table and checking queue for waiting packets to send
+ * 				if its a data message - will be decapsulated and sent up to the higher layer - of course it will happen only if dest mac on msg equals to my mac
+ */
 void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 {
+	// checking message type - if is mac it will be handled differently
 	if (packet->getLength() == ARP_TYPE)
 	{
 		// getting the src mac for later useage (dest mac is broadcast so it is irrelevent
@@ -133,8 +148,8 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 		}
 
 		Arp* arpPacket = check_and_cast<Arp *>(packet->decapsulate());
-		delete packet;
-		if (ARP_REQUEST == arpPacket->getType()) // arp request
+		delete packet; // deleting the eth packet only. dont need it anymore. i have a pointer for the arp itself
+		if (ARP_REQUEST == arpPacket->getType()) // arp request, will check if its mine, if it is will send arp reply
 		{
 			bool isMine = true;
 			unsigned int i=0;
@@ -207,6 +222,7 @@ void Eth::processMsgFromLowerLayer(Eth_pck *packet)
 				double age = par("aging");
 				scheduleAt(simTime()+age,table[index].timer);  // launching a new delete entry event
 			}
+			// checking for messages that are still on the fifo - if found going back to higher layer function which handles those messages
 			IP_pck* ipPacket = checkForMore();
 			if (ipPacket !=NULL)
 			{

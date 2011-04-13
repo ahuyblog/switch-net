@@ -52,7 +52,11 @@ void Ip::initialize()
     	}
     }
 }
-
+/*
+ * Description: sending a message - also checks if channel is busy, in case it is busy
+ * 				will put the message in a queue and initiate a self event "busy" will grab it in the future
+ * 				and send the msg in the queue later.
+ */
 void Ip::handleMessage(cMessage *msg)
 {
 	EV << "handeling message!!!\n"<< msg->getName();
@@ -61,6 +65,9 @@ void Ip::handleMessage(cMessage *msg)
     else
     	processMsgFromHigherLayer(check_and_cast<App_pck *>(msg));
 }
+/*
+ * Description: this function handles messages that came from the ethernet layer
+ */
 void Ip::processMsgFromLowerLayer(IP_pck *packet)
 {
 	bool isMine = true;
@@ -80,6 +87,9 @@ void Ip::processMsgFromLowerLayer(IP_pck *packet)
 		delete packet;
 	}
 }
+/*
+ * Description: this function handles messages that arrived from the app layer
+ */
 void Ip::processMsgFromHigherLayer(App_pck *packet)
 {
 	EV << "Message arrived from Higher level\n";
